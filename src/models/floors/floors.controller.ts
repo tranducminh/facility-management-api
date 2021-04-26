@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+  HttpStatus,
+} from '@nestjs/common';
 import { FloorsService } from './floors.service';
 import { CreateFloorDto } from './dto/create-floor.dto';
 import { UpdateFloorDto } from './dto/update-floor.dto';
@@ -8,8 +18,11 @@ export class FloorsController {
   constructor(private readonly floorsService: FloorsService) {}
 
   @Post()
-  create(@Body() createFloorDto: CreateFloorDto) {
-    return this.floorsService.create(createFloorDto);
+  async create(@Body() createFloorDto: CreateFloorDto, @Res() res) {
+    return res.status(HttpStatus.OK).json({
+      floor: await this.floorsService.create(createFloorDto),
+      message: 'Create new floor successfully',
+    });
   }
 
   @Get()

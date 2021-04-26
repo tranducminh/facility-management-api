@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+  HttpStatus,
+} from '@nestjs/common';
 import { ReplacementsService } from './replacements.service';
 import { CreateReplacementDto } from './dto/create-replacement.dto';
 import { UpdateReplacementDto } from './dto/update-replacement.dto';
@@ -8,8 +18,10 @@ export class ReplacementsController {
   constructor(private readonly replacementsService: ReplacementsService) {}
 
   @Post()
-  create(@Body() createReplacementDto: CreateReplacementDto) {
-    return this.replacementsService.create(createReplacementDto);
+  async create(@Body() createReplacementDto: CreateReplacementDto, @Res() res) {
+    return res.status(HttpStatus.OK).json({
+      replacement: await this.replacementsService.create(createReplacementDto),
+    });
   }
 
   @Get()
@@ -23,7 +35,10 @@ export class ReplacementsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReplacementDto: UpdateReplacementDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateReplacementDto: UpdateReplacementDto,
+  ) {
     return this.replacementsService.update(+id, updateReplacementDto);
   }
 

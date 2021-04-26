@@ -38,9 +38,6 @@ export class Building {
     this.updatedAt = new Date();
   }
 
-  @OneToMany(() => Room, (room) => room.building, { cascade: true })
-  rooms: Room[];
-
   @OneToMany(() => Floor, (floor) => floor.building, { cascade: true })
   floors: Floor[];
 }

@@ -20,11 +20,18 @@ export class RoomSeederService {
   async create(): Promise<Promise<Room>[]> {
     try {
       return rooms.map(async (room) => {
-        const building = await this.buildingRepository.findOne(room.buildingId);
+        const building = await this.buildingRepository.findOne({
+          name: room.buildingName,
+        });
+        const floor = await this.floorRepository.findOne({
+          name: room.floorName,
+          building: building,
+        });
         const newRoom = this.roomRepository.create(room);
         return await this.roomRepository.save({
           ...newRoom,
-          building: building,
+          building,
+          floor,
         });
       });
     } catch (error) {

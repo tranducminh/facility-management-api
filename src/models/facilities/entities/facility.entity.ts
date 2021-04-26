@@ -36,7 +36,7 @@ export class Facility {
   @IsNumber()
   price?: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: FacilityStatus.READY })
   @IsNotEmpty()
   @IsEnum(FacilityStatus)
   status: FacilityStatus;

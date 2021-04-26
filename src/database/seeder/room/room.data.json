@@ -1,19 +1,22 @@
 [
   {
     "name": "101",
-    "buildingId": 1,
-    "floorId": 1
+    "buildingName": "A1",
+    "floorName": "1"
   },
   {
     "name": "102",
-    "buildingId": 1
+    "buildingName": "A1",
+    "floorName": "1"
   },
   {
     "name": "103",
-    "buildingId": 2
+    "buildingName": "A2",
+    "floorName": "1"
   },
   {
     "name": "104",
-    "buildingId": 2
+    "buildingName": "A2",
+    "floorName": "1"
   }
 ]

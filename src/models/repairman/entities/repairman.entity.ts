@@ -1,6 +1,5 @@
-import { IsNotEmpty } from 'class-validator';
-import { Facility } from 'src/models/facilities/entities/facility.entity';
-import { RequestReplacement } from 'src/models/request-replacements/entities/request-replacement.entity';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { History } from 'src/models/histories/entities/history.entity';
 import { Request } from 'src/models/requests/entities/request.entity';
 import { Specialize } from 'src/models/specializes/entities/specialize.entity';
 import {
@@ -9,7 +8,6 @@ import {
   Column,
   Entity,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -18,6 +16,26 @@ export class Repairman {
   @PrimaryGeneratedColumn()
   @IsNotEmpty()
   id: number;
+
+  @Column({ nullable: false })
+  @IsNotEmpty()
+  @IsString()
+  identity: string;
+
+  @Column({ nullable: false })
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @Column({ nullable: false })
+  @IsNotEmpty()
+  @IsString()
+  unit: string;
+
+  @Column({ nullable: true })
+  @IsOptional()
+  @IsString()
+  phone?: string;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;
@@ -45,4 +63,9 @@ export class Repairman {
     cascade: true,
   })
   specializes: Specialize[];
+
+  @OneToMany(() => History, (history) => history.repairman, {
+    cascade: true,
+  })
+  histories: History[];
 }

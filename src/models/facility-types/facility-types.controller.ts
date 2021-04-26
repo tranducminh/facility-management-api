@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+  HttpStatus,
+} from '@nestjs/common';
 import { FacilityTypesService } from './facility-types.service';
 import { CreateFacilityTypeDto } from './dto/create-facility-type.dto';
 import { UpdateFacilityTypeDto } from './dto/update-facility-type.dto';
@@ -17,13 +27,18 @@ export class FacilityTypesController {
     return this.facilityTypesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.facilityTypesService.findOne(+id);
+  @Get(':name')
+  async findOne(@Param('name') name: string, @Res() res) {
+    return res.status(HttpStatus.OK).json({
+      facilityType: await this.facilityTypesService.findOneByName(name),
+    });
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFacilityTypeDto: UpdateFacilityTypeDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateFacilityTypeDto: UpdateFacilityTypeDto,
+  ) {
     return this.facilityTypesService.update(+id, updateFacilityTypeDto);
   }
 

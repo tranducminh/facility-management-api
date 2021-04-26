@@ -39,6 +39,51 @@ export class BuildingsController {
     });
   }
 
+  @Get(':name/floors')
+  async findAllFloor(@Param('name') name: string, @Res() res) {
+    return res.status(HttpStatus.OK).json({
+      floors: await this.buildingsService.findAllFloor(name),
+      message: 'Get floors successfully',
+    });
+  }
+
+  @Get(':name/floors/:floorName')
+  async findFloor(
+    @Param('name') name: string,
+    @Param('floorName') floorName: string,
+    @Res() res,
+  ) {
+    return res.status(HttpStatus.OK).json({
+      floor: await this.buildingsService.findFloor(name, floorName),
+      message: 'Get floor successfully',
+    });
+  }
+
+  @Get(':name/floors/:floorName/rooms')
+  async findAllRoom(
+    @Param('name') name: string,
+    @Param('floorName') floorName: string,
+    @Res() res,
+  ) {
+    return res.status(HttpStatus.OK).json({
+      rooms: await this.buildingsService.findFloor(name, floorName),
+      message: 'Get rooms successfully',
+    });
+  }
+
+  @Get(':name/floors/:floorName/rooms/:roomName')
+  async findRoom(
+    @Param('name') name: string,
+    @Param('floorName') floorName: string,
+    @Param('roomName') roomName: string,
+    @Res() res,
+  ) {
+    return res.status(HttpStatus.OK).json({
+      room: await this.buildingsService.findRoom(name, floorName, roomName),
+      message: 'Get room successfully',
+    });
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

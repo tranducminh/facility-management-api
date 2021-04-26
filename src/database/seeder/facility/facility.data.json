@@ -1,0 +1,54 @@
+[
+  {
+    "facilityType": "computer",
+    "name": "Dell vostro 3568",
+    "origin": "Viet nam",
+    "price": 18000000,
+    "configuration": {
+      "cpu": "CPU Intel Core i9-11900K (3.5GHz turbo up to 5.3Ghz, 8 nhân 16 luồng, 16MB Cache, 125W)",
+      "mainboard": "Mainboard Gigabyte B560M-AORUS ELITE",
+      "psu": "Nguồn Asus ROG Strix 850W Gold - 850W 80 Plus Gold Full Modular",
+      "ram": "Ram Desktop AVEXIR 2CORGB (AVD4UZ330001608G-2CORGB) 16GB (2x8GB) DDR4 3000Mhz",
+      "vga": "Card màn hình Asus GT1030-SL-2G-BRK (2GB GDDR5, 64-bit, DVI+HDMI",
+      "hardDrive": "Ổ cứng SSD Adata SX6000PNP 512GB M.2 2280 PCIe NVMe Gen 3x4 (Đọc 2100MB/s - Ghi 1400MB/s) - (ASX6000PNP-512GT-C)",
+      "opticalDrive": "",
+      "monitor": "Màn hình LG 29WP500-B",
+      "mouse": "Chuột E-Dra EM618 Đen",
+      "keyboard": "Bàn phím cơ Dareu EK87 White",
+      "headPhone": "Tai nghe Asus ROG Delta Gundam LTD",
+      "webcam": "Webcam Rapoo C200 HD 720p",
+      "cardReader": "USB 4.0",
+      "fanCase": "Fan Case Fan Vitra Snow RGB"
+    }
+  },
+  {
+    "facilityType": "fax",
+    "name": "Máy fax Laser Canon L170",
+    "origin": "Canon",
+    "price": 18000000,
+    "configuration": {
+      "model": "L170",
+      "faxSpeed": "Tốc độ Modem Up to 33.6Kbps.",
+      "resolution": "600Dpi",
+      "ram": "Dung lượng bộ nhớ 512 trang.",
+      "paperSize": "Khay giấy vào: 150 tờ; khay giấy ra: 100 tờ",
+      "printInk": "Cartridge 328"
+    }
+  },
+  {
+    "facilityType": "printer",
+    "name": "Máy in Laser màu Canon LBP613CDW",
+    "origin": "Canon",
+    "price": 18000000,
+    "configuration": {
+      "model": "LBP613CDW",
+      "printSpeed": "In đen trắng: 18 trang/ phút (A4/Letter)/ In màu: 18 trang/ phút (A4/Letter)",
+      "resolution": "Lên tới 9,600 (tương đương) x 600dpi",
+      "ram": "1 GB",
+      "paperSize": "A4, B5, A5, Legal (x1), Letter, Executive, Statement, Foolscap, Indian Legal, Index Card. Envelope: COM10, Monarch, C5, DL, Custom sizes (Width: 76.2 to 215.9mm, Length: 127.0 to 355.6mm)",
+      "printInk": "Cartridge Canon 045BK/C/M/Y",
+      "duplexPrint": "có",
+      "communication": "USB/ LAN/ WIFI"
+    }
+  }
+]

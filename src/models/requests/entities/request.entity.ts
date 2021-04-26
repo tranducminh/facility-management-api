@@ -1,9 +1,10 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { RequestStatus } from 'src/common/enums/request-status.enum';
 import { Employee } from 'src/models/employees/entities/employee.entity';
 import { Facility } from 'src/models/facilities/entities/facility.entity';
+import { History } from 'src/models/histories/entities/history.entity';
 import { Repairman } from 'src/models/repairman/entities/repairman.entity';
-import { RequestReplacement } from 'src/models/request-replacements/entities/request-replacement.entity';
+import { Replacement } from 'src/models/replacements/entities/replacement.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -20,7 +21,7 @@ export class Request {
   @IsNotEmpty()
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: RequestStatus.PENDING })
   @IsNotEmpty()
   @IsEnum(RequestStatus)
   status: RequestStatus;
@@ -30,10 +31,20 @@ export class Request {
   @IsString()
   problem: string;
 
-  @Column({ nullable: false, type: 'longtext' })
-  @IsNotEmpty()
+  @Column({ nullable: true, type: 'longtext' })
+  @IsOptional()
   @IsString()
-  solution: string;
+  solution?: string;
+
+  @Column({ nullable: true, type: 'longtext', name: 'rejected_reason' })
+  @IsOptional()
+  @IsString()
+  rejectedReason?: string;
+
+  @Column({ nullable: true, type: 'longtext', name: 'uncompleted_reason' })
+  @IsOptional()
+  @IsString()
+  uncompletedReason?: string;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;
@@ -58,13 +69,16 @@ export class Request {
   @ManyToOne(() => Facility, (facility) => facility.requests)
   facility: Facility;
 
-  @OneToMany(
-    () => RequestReplacement,
-    (requestReplacement) => requestReplacement.request,
-    { cascade: true },
-  )
-  requestReplacements: RequestReplacement[];
+  @OneToMany(() => Replacement, (replacement) => replacement.request, {
+    cascade: true,
+  })
+  replacements: Replacement[];
 
   @ManyToOne(() => Repairman, (repairman) => repairman.requests)
   repairman: Repairman;
+
+  @OneToMany(() => History, (history) => history.request, {
+    cascade: true,
+  })
+  histories: History[];
 }

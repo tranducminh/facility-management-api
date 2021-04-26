@@ -8,6 +8,7 @@ import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { catchError } from 'src/common/helpers/catch-error';
 import { Repository } from 'typeorm';
 import { AuthenticationService } from '../authentication/authentication.service';
+import { Room } from '../rooms/entities/room.entity';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { LoginEmployeeDto } from './dto/login-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
@@ -19,9 +20,11 @@ export class EmployeesService {
     private readonly authenticationService: AuthenticationService,
     @InjectRepository(Employee)
     private readonly employeeRepository: Repository<Employee>,
+    @InjectRepository(Room)
+    private readonly roomRepository: Repository<Room>,
   ) {}
 
-  async create(createEmployeeDto: CreateEmployeeDto): Promise<string> {
+  async create(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
     try {
       const { password, passwordConfirmation } = createEmployeeDto;
       if (password !== passwordConfirmation) {
@@ -30,15 +33,23 @@ export class EmployeesService {
       const hashPassword = await this.authenticationService.generateHashPassword(
         password,
       );
-      const newEmployee = this.employeeRepository.create({
-        ...createEmployeeDto,
-        hashPassword: hashPassword,
-      });
-      const saveEmployee = await this.employeeRepository.save(newEmployee);
-      return await this.authenticationService.generateAuthToken(
-        saveEmployee.id,
-        'Employee',
-      );
+      let newEmployee;
+      if (createEmployeeDto.roomId) {
+        const room = await this.roomRepository.findOne(
+          createEmployeeDto.roomId,
+        );
+        newEmployee = this.employeeRepository.create({
+          ...createEmployeeDto,
+          hashPassword: hashPassword,
+          room,
+        });
+      } else {
+        newEmployee = this.employeeRepository.create({
+          ...createEmployeeDto,
+          hashPassword: hashPassword,
+        });
+      }
+      return await this.employeeRepository.save(newEmployee);
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -54,7 +65,18 @@ export class EmployeesService {
       employees: await this.employeeRepository.find({
         skip: (offset - 1) * limit,
         take: limit,
-        relations: ['room'],
+        select: [
+          'id',
+          'identity',
+          'name',
+          'dateOfBirth',
+          'unit',
+          'email',
+          'avatar',
+          'phone',
+          'hasRoom',
+        ],
+        relations: ['room', 'room.floor', 'room.floor.building', 'facilities'],
       }),
       totalPage: Math.ceil(totalCount / limit),
     };
@@ -62,9 +84,21 @@ export class EmployeesService {
 
   async findOne(id: string): Promise<Employee> {
     try {
-      const employee = await this.employeeRepository.findOne({
-        identity: id,
-      });
+      const employee = await this.employeeRepository.findOne(
+        {
+          identity: id,
+        },
+        {
+          relations: [
+            'room',
+            'room.floor',
+            'room.floor.building',
+            'facilities',
+            'facilities.facilityType',
+            'facilities.configuration',
+          ],
+        },
+      );
       if (!employee) {
         throw new NotFoundException('Employee not found');
       }
@@ -102,5 +136,54 @@ export class EmployeesService {
       employee.id,
       'Employee',
     );
+  }
+
+  async findMe(id: number) {
+    try {
+      return await this.employeeRepository.findOne(id, {
+        relations: ['room', 'room.floor', 'room.floor.building'],
+      });
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
+  }
+
+  async findMyFacilities(id: number) {
+    try {
+      return await this.employeeRepository.findOne(id, {
+        relations: [
+          'facilities',
+          'facilities.configuration',
+          'facilities.facilityType',
+          'requests',
+          'requests.repairman',
+          'requests.repairman.specializes',
+        ],
+      });
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
+  }
+
+  async findMyRequests(id: number) {
+    try {
+      return await this.employeeRepository.findOne(id, {
+        relations: [
+          'requests',
+          'requests.repairman',
+          'requests.repairman.specializes',
+          'requests.repairman.specializes.facilityType',
+          'requests.facility',
+          'requests.facility.facilityType',
+          'requests.facility.configuration',
+          'requests.replacements',
+        ],
+      });
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
   }
 }

@@ -44,9 +44,6 @@ export class Room {
   @OneToMany(() => Employee, (employee) => employee.room, { cascade: true })
   employees: Employee[];
 
-  @ManyToOne(() => Building, (building) => building.rooms)
-  building: Building;
-
   @OneToMany(() => RoomFacility, (roomFacility) => roomFacility.room, {
     cascade: true,
   })

@@ -1,18 +1,18 @@
 [
   {
     "name": "1",
-    "buildingId": 1
+    "buildingName": "A1"
   },
   {
     "name": "2",
-    "buildingId": 1
+    "buildingName": "A1"
   },
   {
     "name": "1",
-    "buildingId": 2
+    "buildingName": "A2"
   },
   {
     "name": "2",
-    "buildingId": 2
+    "buildingName": "A2"
   }
 ]

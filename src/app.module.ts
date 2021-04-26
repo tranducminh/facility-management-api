@@ -10,7 +10,6 @@ import { FacilityTypesModule } from './models/facility-types/facility-types.modu
 import { RequestsModule } from './models/requests/requests.module';
 import { RoomFacilitiesModule } from './models/room-facilities/room-facilities.module';
 import { ReplacementsModule } from './models/replacements/replacements.module';
-import { RequestReplacementsModule } from './models/request-replacements/request-replacements.module';
 import { SpecializesModule } from './models/specializes/specializes.module';
 import { AuthenticationModule } from './models/authentication/authentication.module';
 import { AdminsModule } from './models/admins/admins.module';
@@ -18,6 +17,7 @@ import { ConfigurationsModule } from './models/configurations/configurations.mod
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { FloorsModule } from './models/floors/floors.module';
+import { HistoriesModule } from './models/histories/histories.module';
 
 @Module({
   imports: [
@@ -30,7 +30,6 @@ import { FloorsModule } from './models/floors/floors.module';
     RequestsModule,
     RoomFacilitiesModule,
     ReplacementsModule,
-    RequestReplacementsModule,
     SpecializesModule,
     AuthenticationModule,
     AdminsModule,
@@ -38,16 +37,17 @@ import { FloorsModule } from './models/floors/floors.module';
     TypeOrmModule.forRoot({
       type: 'mysql',
       // host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT),
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
+      port: 3310,
+      username: 'root',
+      password: 'Hoidelamgi',
+      database: 'facility-management-api',
       autoLoadEntities: true,
     }),
     ConfigModule.forRoot({
       envFilePath: ['.env.development', '.env.production'],
     }),
     FloorsModule,
+    HistoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

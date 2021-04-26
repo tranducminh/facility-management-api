@@ -17,9 +17,9 @@ export class FloorSeederService {
   async create(): Promise<Promise<Floor>[]> {
     try {
       return floors.map(async (floor) => {
-        const building = await this.buildingRepository.findOne(
-          floor.buildingId,
-        );
+        const building = await this.buildingRepository.findOne({
+          name: floor.buildingName,
+        });
         const newFloor = this.floorRepository.create({ ...floor, building });
         return await this.floorRepository.save(newFloor);
       });

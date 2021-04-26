@@ -5,6 +5,7 @@ import {
   IsString,
   Matches,
 } from 'class-validator';
+import { BooleanStatus } from 'src/common/enums/boolean-status.enum';
 import { CommonStatus } from 'src/common/enums/common-status.enum';
 import { Facility } from 'src/models/facilities/entities/facility.entity';
 import { Request } from 'src/models/requests/entities/request.entity';
@@ -66,10 +67,10 @@ export class Employee {
   @IsString()
   hashPassword: string;
 
-  @Column({ default: CommonStatus.PENDING })
+  @Column({ default: BooleanStatus.FALSE })
   @IsNotEmpty()
-  @IsEnum(CommonStatus)
-  status: CommonStatus;
+  @IsEnum(BooleanStatus)
+  hasRoom: BooleanStatus;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;
@@ -81,6 +82,9 @@ export class Employee {
   private beforeInsert() {
     this.createdAt = new Date();
     this.updatedAt = new Date();
+    if (this.room) {
+      this.hasRoom = BooleanStatus.TRUE;
+    }
   }
 
   @BeforeUpdate()

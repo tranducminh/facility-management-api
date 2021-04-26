@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Facility } from 'src/models/facilities/entities/facility.entity';
-import { RequestReplacement } from 'src/models/request-replacements/entities/request-replacement.entity';
+import { Request } from 'src/models/requests/entities/request.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -25,7 +25,7 @@ export class Replacement {
   @Column({ nullable: false })
   @IsString()
   @IsNotEmpty()
-  origin: string;
+  source: string;
 
   @Column({ nullable: false })
   @IsString()
@@ -52,9 +52,6 @@ export class Replacement {
   @ManyToOne(() => Facility, (facility) => facility.replacements)
   facility: Facility;
 
-  @OneToOne(
-    () => RequestReplacement,
-    (requestReplacement) => requestReplacement.replacement,
-  )
-  requestReplacement: RequestReplacement;
+  @ManyToOne(() => Request, (request) => request.replacements)
+  request: Request;
 }

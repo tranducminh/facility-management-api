@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Building } from 'src/models/buildings/entities/building.entity';
 import { Room } from 'src/models/rooms/entities/room.entity';
 import {
