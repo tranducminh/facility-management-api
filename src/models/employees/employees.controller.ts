@@ -11,13 +11,17 @@ import {
   Query,
   UseGuards,
   Req,
+  Put,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { UpdateEmployeeAdminDto } from './dto/update-employee-admin.dto';
+import { UpdateEmployeeMyselfDto } from './dto/update-employee-myself.dto';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { LoginEmployeeDto } from './dto/login-employee.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { BooleanStatus } from 'src/common/enums/boolean-status.enum';
+import { FilterEmployeeDto } from './dto/filter-employee.dto';
 
 @Controller('employees')
 export class EmployeesController {
@@ -25,9 +29,9 @@ export class EmployeesController {
 
   @Post('/login')
   async login(@Body() loginEmployeeDto: LoginEmployeeDto, @Res() res) {
-    const token = await this.employeesService.login(loginEmployeeDto);
+    const result = await this.employeesService.login(loginEmployeeDto);
     return res.status(HttpStatus.OK).json({
-      data: { token },
+      data: { ...result },
       message: 'Login successfully',
     });
   }
@@ -43,18 +47,22 @@ export class EmployeesController {
 
   @Get()
   @UseGuards(AuthGuard)
-  async findAll(@Query() paginationQuery: PaginationQueryDto, @Res() res) {
-    const result = await this.employeesService.findAll(paginationQuery);
+  async findAll(@Query() params: FilterEmployeeDto, @Res() res) {
+    const result = await this.employeesService.findAll(
+      params.limit,
+      params.offset,
+      params.hasRoom,
+    );
     return res.status(HttpStatus.OK).json({
       ...result,
-      message: `Get employee list page ${paginationQuery.offset} successfully`,
+      message: `Get employee list page  successfully`,
     });
   }
 
   @Get('/me')
   @UseGuards(AuthGuard)
   async findMe(@Req() req, @Res() res) {
-    const employee = await this.employeesService.findMe(req.employeeId);
+    const employee = await this.employeesService.findMe(req.userId);
     return res.status(HttpStatus.OK).json({
       employee,
       message: `Get profile successfully`,
@@ -64,9 +72,7 @@ export class EmployeesController {
   @Get('/me/facilities')
   @UseGuards(AuthGuard)
   async findMyFacilities(@Req() req, @Res() res) {
-    const employee = await this.employeesService.findMyFacilities(
-      req.employeeId,
-    );
+    const employee = await this.employeesService.findMyFacilities(req.userId);
     return res.status(HttpStatus.OK).json({
       employee,
       message: `Get profile successfully`,
@@ -76,7 +82,7 @@ export class EmployeesController {
   @Get('/me/requests')
   @UseGuards(AuthGuard)
   async findMyRequests(@Req() req, @Res() res) {
-    const employee = await this.employeesService.findMyRequests(req.employeeId);
+    const employee = await this.employeesService.findMyRequests(req.userId);
     return res.status(HttpStatus.OK).json({
       employee,
       message: `Get profile successfully`,
@@ -90,12 +96,34 @@ export class EmployeesController {
     });
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateEmployeeDto: UpdateEmployeeDto,
+  @Put('me')
+  @UseGuards(AuthGuard)
+  async updateMyself(
+    @Body() updateEmployeeMyselfDto: UpdateEmployeeMyselfDto,
+    @Req() req,
+    @Res() res,
   ) {
-    return this.employeesService.update(+id, updateEmployeeDto);
+    return res.status(HttpStatus.OK).json({
+      employee: await this.employeesService.updateMyself(
+        +req.userId,
+        updateEmployeeMyselfDto,
+      ),
+    });
+  }
+
+  @Put(':id')
+  @UseGuards(AuthGuard)
+  async updateByAdmin(
+    @Param('id') id: string,
+    @Body() updateEmployeeAdminDto: UpdateEmployeeAdminDto,
+    @Res() res,
+  ) {
+    return res.status(HttpStatus.OK).json({
+      employee: await this.employeesService.updateByAdmin(
+        +id,
+        updateEmployeeAdminDto,
+      ),
+    });
   }
 
   @Delete(':id')

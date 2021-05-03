@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { Facility } from 'src/models/facilities/entities/facility.entity';
-import { Request } from 'src/models/requests/entities/request.entity';
+import { Admin } from 'src/models/admins/entities/admin.entity';
+import { Employee } from 'src/models/employees/entities/employee.entity';
+import { Repairman } from 'src/models/repairman/entities/repairman.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -10,26 +11,16 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity('replacements')
-export class Replacement {
+@Entity('notifications')
+export class Notification {
   @PrimaryGeneratedColumn()
   @IsNotEmpty()
   id: number;
 
-  @Column({ nullable: false })
-  @IsString()
+  @Column({ nullable: false, type: 'longtext' })
   @IsNotEmpty()
-  component: string;
-
-  @Column({ nullable: false })
   @IsString()
-  @IsNotEmpty()
-  source: string;
-
-  @Column({ nullable: false })
-  @IsString()
-  @IsNotEmpty()
-  target: string;
+  content: string;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;
@@ -48,9 +39,15 @@ export class Replacement {
     this.updatedAt = new Date();
   }
 
-  @ManyToOne(() => Facility, (facility) => facility.replacements)
-  facility: Facility;
+  @ManyToOne(
+    () => Repairman || Employee || Admin,
+    (receiver) => receiver.sentNotifications,
+  )
+  receiver: Repairman | Employee | Admin;
 
-  @ManyToOne(() => Request, (request) => request.replacements)
-  request: Request;
+  @ManyToOne(
+    () => Repairman || Employee || Admin,
+    (sender) => sender.notifications,
+  )
+  sender: Repairman | Employee | Admin;
 }

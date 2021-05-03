@@ -18,6 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { FloorsModule } from './models/floors/floors.module';
 import { HistoriesModule } from './models/histories/histories.module';
+import { NotificationsModule } from './models/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -40,7 +41,7 @@ import { HistoriesModule } from './models/histories/histories.module';
       port: 3310,
       username: 'root',
       password: 'Hoidelamgi',
-      database: 'facility-management-api',
+      database: 'facility-management-api-development',
       autoLoadEntities: true,
     }),
     ConfigModule.forRoot({
@@ -48,6 +49,7 @@ import { HistoriesModule } from './models/histories/histories.module';
     }),
     FloorsModule,
     HistoriesModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

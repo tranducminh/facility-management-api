@@ -10,11 +10,13 @@ import { CommonStatus } from 'src/common/enums/common-status.enum';
 import { Facility } from 'src/models/facilities/entities/facility.entity';
 import { Request } from 'src/models/requests/entities/request.entity';
 import { Room } from 'src/models/rooms/entities/room.entity';
+import { Notification } from 'src/models/notifications/entities/notification.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -26,7 +28,7 @@ export class Employee {
   @IsNotEmpty()
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   @IsNotEmpty()
   @IsString()
   identity: string;
@@ -67,10 +69,15 @@ export class Employee {
   @IsString()
   hashPassword: string;
 
-  @Column({ default: BooleanStatus.FALSE })
+  @Column({ default: BooleanStatus.FALSE, name: 'has_room' })
   @IsNotEmpty()
   @IsEnum(BooleanStatus)
   hasRoom: BooleanStatus;
+
+  @Column({ nullable: false })
+  @IsNotEmpty()
+  @IsString()
+  channel: string;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;
@@ -82,6 +89,7 @@ export class Employee {
   private beforeInsert() {
     this.createdAt = new Date();
     this.updatedAt = new Date();
+    this.channel = new Date().getTime().toString();
     if (this.room) {
       this.hasRoom = BooleanStatus.TRUE;
     }
@@ -100,4 +108,14 @@ export class Employee {
 
   @OneToMany(() => Facility, (facility) => facility.employee, { cascade: true })
   facilities: Facility[];
+
+  @OneToMany(() => Notification, (notification) => notification.receiver, {
+    cascade: true,
+  })
+  sentNotifications: Notification[];
+
+  @OneToMany(() => Notification, (notification) => notification.sender, {
+    cascade: true,
+  })
+  notifications: Notification[];
 }

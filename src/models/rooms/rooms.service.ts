@@ -32,7 +32,7 @@ export class RoomsService {
 
   async findAll(): Promise<Room[]> {
     return await this.roomRepository.find({
-      relations: ['floor', 'floor.building', 'building'],
+      relations: ['floor', 'floor.building', 'employees'],
     });
   }
 

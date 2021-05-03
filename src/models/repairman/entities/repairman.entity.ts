@@ -7,9 +7,11 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Notification } from 'src/models/notifications/entities/notification.entity';
 
 @Entity('repairman')
 export class Repairman {
@@ -17,6 +19,7 @@ export class Repairman {
   @IsNotEmpty()
   id: number;
 
+  @Index()
   @Column({ nullable: false })
   @IsNotEmpty()
   @IsString()
@@ -37,6 +40,20 @@ export class Repairman {
   @IsString()
   phone?: string;
 
+  @Column({
+    nullable: false,
+    type: 'longtext',
+    name: 'hash_password',
+  })
+  @IsNotEmpty()
+  @IsString()
+  hashPassword: string;
+
+  @Column({ nullable: false })
+  @IsNotEmpty()
+  @IsString()
+  channel: string;
+
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;
 
@@ -47,6 +64,7 @@ export class Repairman {
   private beforeInsert() {
     this.createdAt = new Date();
     this.updatedAt = new Date();
+    this.channel = new Date().getTime().toString();
   }
 
   @BeforeUpdate()
@@ -68,4 +86,14 @@ export class Repairman {
     cascade: true,
   })
   histories: History[];
+
+  @OneToMany(() => Notification, (notification) => notification.receiver, {
+    cascade: true,
+  })
+  sentNotifications: Notification[];
+
+  @OneToMany(() => Notification, (notification) => notification.sender, {
+    cascade: true,
+  })
+  notifications: Notification[];
 }

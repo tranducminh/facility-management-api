@@ -16,10 +16,20 @@ import { RepairmanService } from './repairman.service';
 import { CreateRepairmanDto } from './dto/create-repairman.dto';
 import { UpdateRepairmanDto } from './dto/update-repairman.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { LoginRepairmanDto } from './dto/login-repairman.dto';
 
 @Controller('repairman')
 export class RepairmanController {
   constructor(private readonly repairmanService: RepairmanService) {}
+
+  @Post('/login')
+  async login(@Body() loginRepairmanDto: LoginRepairmanDto, @Res() res) {
+    const result = await this.repairmanService.login(loginRepairmanDto);
+    return res.status(HttpStatus.OK).json({
+      data: { ...result },
+      message: 'Login successfully',
+    });
+  }
 
   @Post()
   async create(@Body() createRepairmanDto: CreateRepairmanDto, @Res() res) {
@@ -37,28 +47,28 @@ export class RepairmanController {
 
   @Get('me')
   @UseGuards(AuthGuard)
-  async findMe(@Param('id') id: string, @Res() res, @Req() req) {
-    const { employeeId } = req;
+  async findMe(@Res() res, @Req() req) {
+    const { userId } = req;
     return res.status(HttpStatus.OK).json({
-      repairman: await this.repairmanService.findMe(+employeeId),
+      repairman: await this.repairmanService.findMe(+userId),
     });
   }
 
   @Get('me/requests')
   @UseGuards(AuthGuard)
   async findMyRequest(@Param('id') id: string, @Res() res, @Req() req) {
-    const { employeeId } = req;
+    const { userId } = req;
     return res.status(HttpStatus.OK).json({
-      repairman: await this.repairmanService.findMyRequest(+employeeId),
+      repairman: await this.repairmanService.findMyRequest(+userId),
     });
   }
 
   @Get('me/histories')
   @UseGuards(AuthGuard)
   async findMyHistory(@Param('id') id: string, @Res() res, @Req() req) {
-    const { employeeId } = req;
+    const { userId } = req;
     return res.status(HttpStatus.OK).json({
-      repairman: await this.repairmanService.findMyHistory(+employeeId),
+      repairman: await this.repairmanService.findMyHistory(+userId),
     });
   }
 

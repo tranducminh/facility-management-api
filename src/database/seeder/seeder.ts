@@ -25,7 +25,6 @@ export class Seeder {
     //     this.logger.error('Failed seeding buildings...');
     //     Promise.reject(error);
     //   });
-
     // await this.floors()
     //   .then((completed) => {
     //     this.logger.debug('Successfuly completed seeding buildings...');
@@ -35,7 +34,6 @@ export class Seeder {
     //     this.logger.error('Failed seeding buildings...');
     //     Promise.reject(error);
     //   });
-
     // await this.rooms()
     //   .then((completed) => {
     //     this.logger.debug('Successfuly completed seeding rooms...');

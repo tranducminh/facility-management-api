@@ -37,7 +37,7 @@ export class RequestsController {
     return await res.status(HttpStatus.OK).json({
       request: await this.requestsService.create(
         createRequestDto,
-        +req.employeeId,
+        +req.userId,
       ),
     });
   }
@@ -90,7 +90,7 @@ export class RequestsController {
       request: await this.requestsService.complete(
         +id,
         completeRequestDto,
-        +req.employeeId,
+        +req.userId,
       ),
     });
   }
@@ -106,7 +106,7 @@ export class RequestsController {
       request: await this.requestsService.unComplete(
         +id,
         unCompleteRequestDto,
-        +req.employeeId,
+        +req.userId,
       ),
     });
   }

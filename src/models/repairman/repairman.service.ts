@@ -1,16 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { catchError } from 'src/common/helpers/catch-error';
 import { Repository } from 'typeorm';
+import { AuthenticationService } from '../authentication/authentication.service';
 import { FacilityType } from '../facility-types/entities/facility-type.entity';
 import { Specialize } from '../specializes/entities/specialize.entity';
 import { CreateRepairmanDto } from './dto/create-repairman.dto';
+import { LoginRepairmanDto } from './dto/login-repairman.dto';
 import { UpdateRepairmanDto } from './dto/update-repairman.dto';
 import { Repairman } from './entities/repairman.entity';
 
 @Injectable()
 export class RepairmanService {
   constructor(
+    private readonly authenticationService: AuthenticationService,
     @InjectRepository(Repairman)
     private readonly repairmanRepository: Repository<Repairman>,
     @InjectRepository(FacilityType)
@@ -21,11 +28,15 @@ export class RepairmanService {
 
   async create(createRepairmanDto: CreateRepairmanDto) {
     try {
+      const hashPassword = await this.authenticationService.generateHashPassword(
+        createRepairmanDto.identity,
+      );
       const { identity, name, unit, facilityTypes } = createRepairmanDto;
       const newRepairman = this.repairmanRepository.create({
         identity,
         name,
         unit,
+        hashPassword,
       });
       const saveRepairman = await this.repairmanRepository.save(newRepairman);
       for (let i = 0; i < facilityTypes.length; i++) {
@@ -78,6 +89,16 @@ export class RepairmanService {
             'specializes.facilityType',
             'requests',
             'requests.employee',
+            'histories',
+            'histories.request',
+            'histories.request.employee',
+            'histories.request.employee.room',
+            'histories.request.employee.room.floor',
+            'histories.request.employee.room.floor.building',
+            'histories.request.facility',
+            'histories.request.facility.configuration',
+            'histories.request.facility.facilityType',
+            'histories.request.replacements',
           ],
         },
       );
@@ -142,6 +163,35 @@ export class RepairmanService {
       console.log(error);
       catchError(error);
     }
+  }
+
+  async login(
+    loginRepairmanDto: LoginRepairmanDto,
+  ): Promise<{
+    token: string;
+    repairman: Repairman;
+  }> {
+    const { identity, password } = loginRepairmanDto;
+    const repairman = await this.repairmanRepository.findOne({
+      identity,
+    });
+    if (!repairman) {
+      throw new NotFoundException('Repairman not found');
+    }
+    const isAuth = await this.authenticationService.isMatchPassword(
+      password,
+      repairman.hashPassword,
+    );
+    if (!isAuth) {
+      throw new UnauthorizedException('Password is incorrect');
+    }
+    return {
+      repairman,
+      token: this.authenticationService.generateAuthToken(
+        repairman.id,
+        'repairman',
+      ),
+    };
   }
 
   update(id: number, updateRepairmanDto: UpdateRepairmanDto) {

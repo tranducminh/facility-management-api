@@ -26,8 +26,10 @@ export class RoomsController {
   }
 
   @Get()
-  findAll() {
-    return this.roomsService.findAll();
+  async findAll(@Res() res) {
+    return res.status(HttpStatus.OK).json({
+      rooms: await this.roomsService.findAll(),
+    });
   }
 
   @Get(':id')

@@ -17,7 +17,7 @@ export class FacilityType {
   @IsNotEmpty()
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   @IsString()
   @IsNotEmpty()
   name: string;

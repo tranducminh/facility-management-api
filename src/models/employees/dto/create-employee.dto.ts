@@ -12,14 +12,6 @@ export class CreateEmployeeDto {
   @IsString()
   identity: string;
 
-  @IsNotEmpty()
-  @IsString()
-  password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  passwordConfirmation: string;
-
   @IsNotEmpty({ message: 'Tên không được để trống' })
   @IsString()
   name: string;

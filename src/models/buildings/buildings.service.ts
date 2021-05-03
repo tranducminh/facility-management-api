@@ -37,6 +37,16 @@ export class BuildingsService {
           name: 'ASC',
         },
       });
+
+      // return await this.buildingRepository
+      //   .createQueryBuilder('building')
+      //   .innerJoinAndSelect('building.floors', 'floor')
+      //   .innerJoinAndSelect('floor.rooms', 'room')
+      //   .innerJoinAndSelect('room.employees', 'employee')
+      //   .innerJoinAndSelect('employee.requests', 'request')
+      //   .where("request.status = 'pending'")
+      //   .orderBy('building.created_at', 'DESC')
+      //   .getManyAndCount();
     } catch (error) {
       console.log(error);
       catchError(error);
