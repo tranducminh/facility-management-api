@@ -109,13 +109,13 @@ export class Employee {
   @OneToMany(() => Facility, (facility) => facility.employee, { cascade: true })
   facilities: Facility[];
 
-  @OneToMany(() => Notification, (notification) => notification.receiver, {
-    cascade: true,
-  })
-  sentNotifications: Notification[];
+  // @OneToMany(() => Notification, (notification) => notification.receiver, {
+  //   cascade: true,
+  // })
+  // sentNotifications: Notification[];
 
-  @OneToMany(() => Notification, (notification) => notification.sender, {
-    cascade: true,
-  })
-  notifications: Notification[];
+  // @OneToMany(() => Notification, (notification) => notification.sender, {
+  //   cascade: true,
+  // })
+  // notifications: Notification[];
 }

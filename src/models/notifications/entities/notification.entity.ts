@@ -39,15 +39,15 @@ export class Notification {
     this.updatedAt = new Date();
   }
 
-  @ManyToOne(
-    () => Repairman || Employee || Admin,
-    (receiver) => receiver.sentNotifications,
-  )
-  receiver: Repairman | Employee | Admin;
+  // @ManyToOne(
+  //   () => Repairman || Employee || Admin,
+  //   (receiver) => receiver.sentNotifications,
+  // )
+  // receiver: Repairman | Employee | Admin;
 
-  @ManyToOne(
-    () => Repairman || Employee || Admin,
-    (sender) => sender.notifications,
-  )
-  sender: Repairman | Employee | Admin;
+  // @ManyToOne(
+  //   () => Repairman || Employee || Admin,
+  //   (sender) => sender.notifications,
+  // )
+  // sender: Repairman | Employee | Admin;
 }

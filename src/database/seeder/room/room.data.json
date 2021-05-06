@@ -10,6 +10,16 @@
     "floorName": "1"
   },
   {
+    "name": "201",
+    "buildingName": "A1",
+    "floorName": "2"
+  },
+  {
+    "name": "202",
+    "buildingName": "A1",
+    "floorName": "2"
+  },
+  {
     "name": "103",
     "buildingName": "A2",
     "floorName": "1"
