@@ -25,6 +25,18 @@ export class FacilitiesController {
     });
   }
 
+  @Get('/employee/:id')
+  async findAllByEmployee(@Res() res, @Param('id') id: string) {
+    if (id == 'null') {
+      return res.status(HttpStatus.OK).json({
+        facilities: await this.facilitiesService.findAllByEmployee(null),
+      });
+    }
+    return res.status(HttpStatus.OK).json({
+      facilities: await this.facilitiesService.findAllByEmployee(+id),
+    });
+  }
+
   @Get()
   async findAll(
     @Res() res,

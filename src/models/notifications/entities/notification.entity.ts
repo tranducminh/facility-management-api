@@ -1,13 +1,19 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-import { Admin } from 'src/models/admins/entities/admin.entity';
-import { Employee } from 'src/models/employees/entities/employee.entity';
-import { Repairman } from 'src/models/repairman/entities/repairman.entity';
 import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
+import Pusher from 'pusher';
+import { NotificationType } from 'src/common/enums/notification-type.enum';
+import { UserRole } from 'src/common/enums/user-role.enum';
+import {
+  AfterInsert,
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
-  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -21,6 +27,41 @@ export class Notification {
   @IsNotEmpty()
   @IsString()
   content: string;
+
+  @Column({ nullable: false, name: 'receiver_channel' })
+  @IsNotEmpty()
+  @IsString()
+  receiverChannel: string;
+
+  @Column({ nullable: false, name: 'receiver_id' })
+  @IsNotEmpty()
+  @IsNumber()
+  receiverId: number;
+
+  @Column({ nullable: false, name: 'receiver_type' })
+  @IsNotEmpty()
+  @IsEnum(UserRole)
+  receiverType: UserRole;
+
+  @Column({ nullable: false, name: 'sender_id' })
+  @IsNotEmpty()
+  @IsNumber()
+  senderId: number;
+
+  @Column({ nullable: false, name: 'sender_type' })
+  @IsNotEmpty()
+  @IsEnum(UserRole)
+  senderType: UserRole;
+
+  @Column({ nullable: false, default: false })
+  @IsNotEmpty()
+  @IsBoolean()
+  isRead: boolean;
+
+  @Column({ nullable: false })
+  @IsNotEmpty()
+  @IsEnum(NotificationType)
+  type: NotificationType;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;
@@ -38,16 +79,4 @@ export class Notification {
   private beforeUpdate() {
     this.updatedAt = new Date();
   }
-
-  // @ManyToOne(
-  //   () => Repairman || Employee || Admin,
-  //   (receiver) => receiver.sentNotifications,
-  // )
-  // receiver: Repairman | Employee | Admin;
-
-  // @ManyToOne(
-  //   () => Repairman || Employee || Admin,
-  //   (sender) => sender.notifications,
-  // )
-  // sender: Repairman | Employee | Admin;
 }

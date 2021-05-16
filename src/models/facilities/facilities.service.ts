@@ -137,7 +137,6 @@ export class FacilitiesService {
         });
       }
       if (status) {
-        console.log('status');
         return await this.facilityRepository.find({
           where: { status },
           relations: [
@@ -180,14 +179,24 @@ export class FacilitiesService {
     }
   }
 
-  async findAllByType(type: string) {
+  async findAllByEmployee(employeeId: number | null) {
     try {
-      const facilityType = await this.facilityTypeRepository.findOne({
-        name: type,
-      });
+      if (employeeId == null) {
+        return await this.facilityRepository.find({
+          where: { employee: null },
+          relations: ['configuration', 'facilityType'],
+        });
+      }
       return await this.facilityRepository.find({
-        where: { facilityType: { id: facilityType.id } },
-        relations: ['configuration', 'facilityType'],
+        where: { employee: { id: employeeId } },
+        relations: [
+          'configuration',
+          'facilityType',
+          'employee',
+          'employee.room',
+          'employee.room.floor',
+          'employee.room.floor.building',
+        ],
       });
     } catch (error) {
       console.log(error);
@@ -196,16 +205,21 @@ export class FacilitiesService {
   }
 
   async findOne(id: number) {
-    return await this.facilityRepository.findOne(id, {
-      relations: [
-        'facilityType',
-        'configuration',
-        'employee',
-        'employee.room',
-        'employee.room.floor',
-        'employee.room.floor.building',
-      ],
-    });
+    try {
+      return await this.facilityRepository.findOne(id, {
+        relations: [
+          'facilityType',
+          'configuration',
+          'employee',
+          'employee.room',
+          'employee.room.floor',
+          'employee.room.floor.building',
+        ],
+      });
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
   }
 
   update(id: number, updateFacilityDto: UpdateFacilityDto) {
@@ -214,5 +228,26 @@ export class FacilitiesService {
 
   remove(id: number) {
     return `This action removes a #${id} facility`;
+  }
+
+  async updateOwner(facilityId: number, employeeId: number) {
+    try {
+      const employee = await this.employeeRepository.findOne(employeeId);
+      return await this.facilityRepository.update(facilityId, { employee });
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
+  }
+
+  async removeOwner(facilityId: number) {
+    try {
+      return await this.facilityRepository.update(facilityId, {
+        employee: null,
+      });
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
   }
 }

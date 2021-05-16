@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserRole } from 'src/common/enums/user-role.enum';
 import { catchError } from 'src/common/helpers/catch-error';
 import { Repository } from 'typeorm';
 import { AuthenticationService } from '../authentication/authentication.service';
@@ -43,7 +44,11 @@ export class AdminsService {
       }
       return {
         admin,
-        token: this.authenticationService.generateAuthToken(admin.id, 'admin'),
+        token: this.authenticationService.generateAuthToken(
+          admin.id,
+          UserRole.ADMIN,
+          admin.channel,
+        ),
       };
     } catch (error) {
       console.log(error);

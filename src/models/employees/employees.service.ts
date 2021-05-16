@@ -11,11 +11,15 @@ import { uploadFileBase64 } from 'src/common/helpers/upload-file';
 import { Repository } from 'typeorm';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { Room } from '../rooms/entities/room.entity';
+import { Notification } from '../notifications/entities/notification.entity';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { LoginEmployeeDto } from './dto/login-employee.dto';
 import { UpdateEmployeeAdminDto } from './dto/update-employee-admin.dto';
 import { UpdateEmployeeMyselfDto } from './dto/update-employee-myself.dto';
 import { Employee } from './entities/employee.entity';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from 'src/common/enums/notification-type.enum';
+import { UserRole } from 'src/common/enums/user-role.enum';
 
 @Injectable()
 export class EmployeesService {
@@ -25,6 +29,7 @@ export class EmployeesService {
     private readonly employeeRepository: Repository<Employee>,
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async create(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
@@ -85,12 +90,12 @@ export class EmployeesService {
               'room.floor',
               'room.floor.building',
               'facilities',
+              'facilities.facilityType',
             ],
           }),
           totalPage: Math.ceil(totalCount / limit),
         };
       }
-      console.log('def', hasRoom);
       return {
         employees: await this.employeeRepository.find({
           where: { hasRoom },
@@ -112,6 +117,7 @@ export class EmployeesService {
             'room.floor',
             'room.floor.building',
             'facilities',
+            'facilities.facilityType',
           ],
         }),
         totalPage: Math.ceil(totalCount / limit),
@@ -239,7 +245,8 @@ export class EmployeesService {
       employee,
       token: this.authenticationService.generateAuthToken(
         employee.id,
-        'employee',
+        UserRole.EMPLOYEE,
+        employee.channel,
       ),
     };
   }
@@ -287,6 +294,48 @@ export class EmployeesService {
           'requests.replacements',
         ],
       });
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
+  }
+
+  async updateRoom(employeeIdentity: string, roomId: number) {
+    try {
+      const room = await this.roomRepository.findOne(roomId, {
+        relations: ['floor', 'floor.building'],
+      });
+      const employee = await this.employeeRepository.findOne({
+        identity: employeeIdentity,
+      });
+      const updatedEmployee = await this.employeeRepository.save(
+        Object.assign(employee, { room }),
+      );
+      this.notificationsService.create({
+        receiver: employee,
+        room,
+        type: NotificationType.NEW_ROOM,
+      });
+      return updatedEmployee;
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
+  }
+
+  async removeRoom(employeeIdentity: string) {
+    try {
+      const employee = await this.employeeRepository.findOne({
+        identity: employeeIdentity,
+      });
+      const updatedEmployee = await this.employeeRepository.save(
+        Object.assign(employee, { room: null }),
+      );
+      this.notificationsService.create({
+        receiver: employee,
+        type: NotificationType.PENDING_ROOM,
+      });
+      return updatedEmployee;
     } catch (error) {
       console.log(error);
       catchError(error);

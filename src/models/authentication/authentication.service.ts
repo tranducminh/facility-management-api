@@ -48,10 +48,10 @@ export class AuthenticationService {
     }
   }
 
-  generateAuthToken(id: number, role: string): string {
+  generateAuthToken(id: number, role: string, channel: string): string {
     try {
       return this.jwtService.sign(
-        { id, role },
+        { id, role, channel },
         {
           expiresIn: process.env.TOKEN_EXPIRE_TIME,
           secret: process.env.JWT_SECRET_KEY,

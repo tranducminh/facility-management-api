@@ -98,6 +98,11 @@ export class Employee {
   @BeforeUpdate()
   private beforeUpdate() {
     this.updatedAt = new Date();
+    if (this.room) {
+      this.hasRoom = BooleanStatus.TRUE;
+    } else {
+      this.hasRoom = BooleanStatus.FALSE;
+    }
   }
 
   @ManyToOne(() => Room, (room) => room.employees)

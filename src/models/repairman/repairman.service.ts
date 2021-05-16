@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserRole } from 'src/common/enums/user-role.enum';
 import { catchError } from 'src/common/helpers/catch-error';
 import { Repository } from 'typeorm';
 import { AuthenticationService } from '../authentication/authentication.service';
@@ -189,7 +190,8 @@ export class RepairmanService {
       repairman,
       token: this.authenticationService.generateAuthToken(
         repairman.id,
-        'repairman',
+        UserRole.REPAIRMAN,
+        repairman.channel,
       ),
     };
   }

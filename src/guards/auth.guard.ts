@@ -27,10 +27,10 @@ export class AuthGuard implements CanActivate {
       /**
        * check id, exp are null or not
        */
-      const { id, exp } = this.jwtService.verify(token, {
+      const { id, exp, role, channel } = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET_KEY,
       }) as DecodeToken;
-      if (!id || !exp) {
+      if (!id || !exp || !role || !channel) {
         throw new UnauthorizedException('Token is invalid');
       }
 
@@ -38,6 +38,8 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException('Token is expired');
 
       request.userId = id;
+      request.role = role;
+      request.channel = channel;
       return true;
     } catch (error) {
       console.log(error);

@@ -4,4 +4,5 @@ export class DecodeToken {
   id: string;
   exp: number;
   role: UserRole;
+  channel: string;
 }

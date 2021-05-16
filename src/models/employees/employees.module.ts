@@ -6,12 +6,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
 import { Room } from '../rooms/entities/room.entity';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
     AuthenticationModule,
     JwtModule.register({}),
     TypeOrmModule.forFeature([Employee, Room]),
+    NotificationsModule,
   ],
   controllers: [EmployeesController],
   providers: [EmployeesService],

@@ -130,4 +130,24 @@ export class EmployeesController {
   remove(@Param('id') id: string) {
     return this.employeesService.remove(+id);
   }
+
+  @Put(':id/room')
+  async updateRoom(
+    @Param('id') id: string,
+    @Res() res,
+    @Body() { roomId }: { roomId: number },
+  ) {
+    return res.status(HttpStatus.OK).json({
+      employee: await this.employeesService.updateRoom(id, roomId),
+      message: 'Cập nhật phòng thành công',
+    });
+  }
+
+  @Delete(':id/room')
+  async removeRoom(@Param('id') id: string, @Res() res) {
+    return res.status(HttpStatus.OK).json({
+      employee: await this.employeesService.removeRoom(id),
+      message: 'Di chuyển cán bộ khỏi phòng thành công',
+    });
+  }
 }
