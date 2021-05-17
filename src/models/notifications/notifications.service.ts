@@ -56,17 +56,19 @@ export class NotificationsService {
           : null,
         content:
           type === NotificationType.NEW_REQUEST
-            ? `${sender.name} đã tạo một yêu cầu mới`
+            ? `${sender.name} đã tạo một yêu cầu mới #${request.id}`
             : type === NotificationType.APPROVED_REQUEST
-            ? `Admin đã chấp thuận yêu cầu của bạn`
+            ? `Admin đã chấp thuận yêu cầu #${request.id}`
             : type === NotificationType.REJECTED_REQUEST
-            ? `Admin đã từ chối yêu cầu của bạn`
+            ? `Admin đã từ chối yêu cầu #${request.id}`
             : type === NotificationType.INPROCESS_REQUEST
             ? `Yêu cầu #${request.id} đang được thực hiện`
             : type === NotificationType.COMPLETED_REQUEST
             ? `Yêu cầu #${request.id} đã được hoàn thành`
             : type === NotificationType.UNCOMPLETED_REQUEST
             ? `Yêu cầu #${request.id} không được hoàn thành`
+            : type === NotificationType.ASSIGNED_TASK
+            ? `Bạn đã được giao nhiệm vụ #${request.id}`
             : type === NotificationType.STARTED_TASK
             ? `${sender.name} đã bắt đầu nhiệm vụ #${request.id}`
             : type === NotificationType.REJECTED_TASK
@@ -102,7 +104,7 @@ export class NotificationsService {
       const newNotification = await this.notificationRepository.save(
         notification,
       );
-      pusher.trigger(newNotification.receiverChannel, 'common', {
+      await pusher.trigger(newNotification.receiverChannel, 'common', {
         notification: newNotification,
       });
       return newNotification;

@@ -2,12 +2,14 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FacilityStatus } from 'src/common/enums/facility-status.enum';
 import { HistoryStatus } from 'src/common/enums/history-status.enum';
+import { NotificationType } from 'src/common/enums/notification-type.enum';
 import { RequestStatus } from 'src/common/enums/request-status.enum';
 import { catchError } from 'src/common/helpers/catch-error';
 import { Repository } from 'typeorm';
 import { Employee } from '../employees/entities/employee.entity';
 import { Facility } from '../facilities/entities/facility.entity';
 import { History } from '../histories/entities/history.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 import { Repairman } from '../repairman/entities/repairman.entity';
 import { ApproveRequestDto } from './dto/approve-request.dto';
 import { CompleteRequestDto } from './dto/complete-request.dto';
@@ -30,6 +32,7 @@ export class RequestsService {
     private readonly facilityRepository: Repository<Facility>,
     @InjectRepository(History)
     private readonly historyRepository: Repository<History>,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async create(createRequestDto: CreateRequestDto, employeeId: number) {
@@ -56,7 +59,13 @@ export class RequestsService {
         employee,
         facility,
       });
-      return await this.requestRepository.save(newRequest);
+      const saveRequest = await this.requestRepository.save(newRequest);
+      this.notificationsService.create({
+        sender: employee,
+        request: saveRequest,
+        type: NotificationType.NEW_REQUEST,
+      });
+      return saveRequest;
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -125,6 +134,22 @@ export class RequestsService {
       const repairman = await this.repairmanRepository.findOne(
         approveRequestDto.repairmanId,
       );
+      const request = await this.requestRepository.findOne(id, {
+        relations: ['employee', 'facility'],
+      });
+      this.facilityRepository.update(request.facility.id, {
+        status: FacilityStatus.ERROR,
+      });
+      this.notificationsService.create({
+        receiver: repairman,
+        request,
+        type: NotificationType.ASSIGNED_TASK,
+      });
+      this.notificationsService.create({
+        receiver: request.employee,
+        request,
+        type: NotificationType.APPROVED_REQUEST,
+      });
       return await this.requestRepository.update(id, {
         status: RequestStatus.ASSIGNED,
         repairman,
@@ -148,6 +173,23 @@ export class RequestsService {
 
   async process(id: number) {
     try {
+      const request = await this.requestRepository.findOne(id, {
+        relations: ['repairman', 'employee', 'facility'],
+      });
+      this.facilityRepository.update(request.facility.id, {
+        status: FacilityStatus.REPAIRING,
+      });
+      this.notificationsService.create({
+        sender: request.repairman,
+        request,
+        type: NotificationType.STARTED_TASK,
+      });
+      this.notificationsService.create({
+        sender: request.repairman,
+        receiver: request.employee,
+        request,
+        type: NotificationType.INPROCESS_REQUEST,
+      });
       return await this.requestRepository.update(id, {
         status: RequestStatus.INPROCESS,
       });
@@ -164,13 +206,29 @@ export class RequestsService {
   ) {
     try {
       const repairman = await this.repairmanRepository.findOne(repairmanId);
-      const request = await this.requestRepository.findOne(id);
+      const request = await this.requestRepository.findOne(id, {
+        relations: ['repairman', 'employee', 'facility'],
+      });
+      this.facilityRepository.update(request.facility.id, {
+        status: FacilityStatus.READY,
+      });
       const newHistory = this.historyRepository.create({
         request,
         repairman,
         status: HistoryStatus.COMPLETED,
       });
       this.historyRepository.save(newHistory);
+      this.notificationsService.create({
+        sender: request.repairman,
+        request,
+        type: NotificationType.COMPLETED_TASK,
+      });
+      this.notificationsService.create({
+        sender: request.repairman,
+        receiver: request.employee,
+        request,
+        type: NotificationType.COMPLETED_REQUEST,
+      });
       return await this.requestRepository.update(id, {
         ...completeRequestDto,
         status: RequestStatus.COMPLETED,
@@ -188,7 +246,12 @@ export class RequestsService {
   ) {
     try {
       const repairman = await this.repairmanRepository.findOne(repairmanId);
-      const request = await this.requestRepository.findOne(id);
+      const request = await this.requestRepository.findOne(id, {
+        relations: ['facility'],
+      });
+      this.facilityRepository.update(request.facility.id, {
+        status: FacilityStatus.ERROR,
+      });
       const newHistory = this.historyRepository.create({
         request,
         repairman,
@@ -196,6 +259,17 @@ export class RequestsService {
         ...unCompleteRequestDto,
       });
       this.historyRepository.save(newHistory);
+      this.notificationsService.create({
+        sender: request.repairman,
+        request,
+        type: NotificationType.UNCOMPLETED_TASK,
+      });
+      this.notificationsService.create({
+        sender: request.repairman,
+        receiver: request.employee,
+        request,
+        type: NotificationType.UNCOMPLETED_REQUEST,
+      });
       return await this.requestRepository.update(id, {
         ...unCompleteRequestDto,
         status: RequestStatus.UNCOMPLETED,
@@ -208,9 +282,55 @@ export class RequestsService {
 
   async reject(id: number, rejectRequestDto: RejectRequestDto) {
     try {
+      const request = await this.requestRepository.findOne(id, {
+        relations: ['employee', 'facility'],
+      });
+      this.facilityRepository.update(request.facility.id, {
+        status: FacilityStatus.READY,
+      });
+      this.notificationsService.create({
+        receiver: request.employee,
+        request,
+        type: NotificationType.REJECTED_REQUEST,
+      });
       return await this.requestRepository.update(id, {
         status: RequestStatus.REJECTED,
         ...rejectRequestDto,
+      });
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
+  }
+
+  async rejectTask(
+    id: number,
+    unCompleteRequestDto: UnCompleteRequestDto,
+    repairmanId: number,
+  ) {
+    try {
+      const repairman = await this.repairmanRepository.findOne(repairmanId);
+      const request = await this.requestRepository.findOne(id, {
+        relations: ['facility'],
+      });
+      this.facilityRepository.update(request.facility.id, {
+        status: FacilityStatus.ERROR,
+      });
+      const newHistory = this.historyRepository.create({
+        request,
+        repairman,
+        status: HistoryStatus.UNCOMPLETED,
+        ...unCompleteRequestDto,
+      });
+      this.historyRepository.save(newHistory);
+      this.notificationsService.create({
+        sender: request.repairman,
+        request,
+        type: NotificationType.REJECTED_TASK,
+      });
+      return await this.requestRepository.update(id, {
+        ...unCompleteRequestDto,
+        status: RequestStatus.UNCOMPLETED,
       });
     } catch (error) {
       console.log(error);

@@ -4,14 +4,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { BooleanStatus } from 'src/common/enums/boolean-status.enum';
 import { catchError } from 'src/common/helpers/catch-error';
 import { uploadFileBase64 } from 'src/common/helpers/upload-file';
 import { Repository } from 'typeorm';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { Room } from '../rooms/entities/room.entity';
-import { Notification } from '../notifications/entities/notification.entity';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { LoginEmployeeDto } from './dto/login-employee.dto';
 import { UpdateEmployeeAdminDto } from './dto/update-employee-admin.dto';
@@ -203,6 +201,11 @@ export class EmployeesService {
         email,
         phone,
       } = updateEmployeeAdminDto;
+      const employee = await this.employeeRepository.findOne(id);
+      this.notificationsService.create({
+        receiver: employee,
+        type: NotificationType.UPDATED_PROFILE,
+      });
       return await this.employeeRepository.update(id, {
         identity,
         name,

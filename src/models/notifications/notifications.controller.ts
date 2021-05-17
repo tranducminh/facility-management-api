@@ -14,6 +14,7 @@ import {
 import { NotificationsService } from './notifications.service';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { UserRole } from 'src/common/enums/user-role.enum';
 
 @Controller('notifications')
 export class NotificationsController {
@@ -22,6 +23,11 @@ export class NotificationsController {
   @Get()
   @UseGuards(AuthGuard)
   async findAll(@Req() req, @Res() res) {
+    if (req.role === UserRole.ADMIN) {
+      return res.status(HttpStatus.OK).json({
+        notifications: await this.notificationsService.findAll(UserRole.ADMIN),
+      });
+    }
     return res.status(HttpStatus.OK).json({
       notifications: await this.notificationsService.findAll(req.channel),
     });
@@ -30,6 +36,13 @@ export class NotificationsController {
   @Get('unread')
   @UseGuards(AuthGuard)
   async countUnReadNotification(@Req() req, @Res() res) {
+    if (req.role === UserRole.ADMIN) {
+      return res.status(HttpStatus.OK).json({
+        total: await this.notificationsService.countUnReadNotification(
+          UserRole.ADMIN,
+        ),
+      });
+    }
     return res.status(HttpStatus.OK).json({
       total: await this.notificationsService.countUnReadNotification(
         req.channel,

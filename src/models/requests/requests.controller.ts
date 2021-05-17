@@ -35,10 +35,7 @@ export class RequestsController {
     @Res() res,
   ) {
     return await res.status(HttpStatus.OK).json({
-      request: await this.requestsService.create(
-        createRequestDto,
-        +req.userId,
-      ),
+      request: await this.requestsService.create(createRequestDto, +req.userId),
     });
   }
 
@@ -126,6 +123,22 @@ export class RequestsController {
   ) {
     return res.status(HttpStatus.OK).json({
       request: await this.requestsService.reject(+id, rejectRequestDto),
+    });
+  }
+
+  @Put(':id/reject-task')
+  async rejectTask(
+    @Param('id') id: string,
+    @Res() res,
+    @Req() req,
+    @Body() unCompleteRequestDto: UnCompleteRequestDto,
+  ) {
+    return res.status(HttpStatus.OK).json({
+      request: await this.requestsService.rejectTask(
+        +id,
+        unCompleteRequestDto,
+        +req.userId,
+      ),
     });
   }
 
