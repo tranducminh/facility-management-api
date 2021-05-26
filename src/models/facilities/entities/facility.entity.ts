@@ -1,4 +1,10 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 import { FacilityStatus } from 'src/common/enums/facility-status.enum';
 import { Configuration } from 'src/models/configurations/entities/configuration.entity';
 import { Employee } from 'src/models/employees/entities/employee.entity';
@@ -36,10 +42,18 @@ export class Facility {
   @IsNumber()
   price?: number;
 
+  @Column({ nullable: true, type: 'timestamp', name: 'handovered_date' })
+  handoveredDate?: Date;
+
   @Column({ nullable: false, default: FacilityStatus.READY })
   @IsNotEmpty()
   @IsEnum(FacilityStatus)
   status: FacilityStatus;
+
+  @Column({ nullable: false, name: 'is_active', default: true })
+  @IsNotEmpty()
+  @IsBoolean()
+  isActive: boolean;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;

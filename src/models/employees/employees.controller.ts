@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Res,
@@ -17,11 +16,12 @@ import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeAdminDto } from './dto/update-employee-admin.dto';
 import { UpdateEmployeeMyselfDto } from './dto/update-employee-myself.dto';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { LoginEmployeeDto } from './dto/login-employee.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { BooleanStatus } from 'src/common/enums/boolean-status.enum';
 import { FilterEmployeeDto } from './dto/filter-employee.dto';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { UserRoles } from 'src/common/decorators/user-roles.decorator';
+import { UserRole } from 'src/common/enums/user-role.enum';
 
 @Controller('employees')
 export class EmployeesController {
@@ -32,21 +32,24 @@ export class EmployeesController {
     const result = await this.employeesService.login(loginEmployeeDto);
     return res.status(HttpStatus.OK).json({
       data: { ...result },
-      message: 'Login successfully',
+      message: 'Đăng nhập thành công',
     });
   }
 
   @Post()
+  @UseGuards(AuthGuard, RolesGuard)
+  @UserRoles(UserRole.ADMIN)
   async create(@Body() createEmployeeDto: CreateEmployeeDto, @Res() res) {
     const employee = await this.employeesService.create(createEmployeeDto);
     return res.status(HttpStatus.OK).json({
       employee,
-      message: 'Create employee account successfully',
+      message: 'Tạo tài khoản cán bộ thành công',
     });
   }
 
   @Get()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @UserRoles(UserRole.ADMIN)
   async findAll(@Query() params: FilterEmployeeDto, @Res() res) {
     const result = await this.employeesService.findAll(
       params.limit,
@@ -55,41 +58,42 @@ export class EmployeesController {
     );
     return res.status(HttpStatus.OK).json({
       ...result,
-      message: `Get employee list page  successfully`,
     });
   }
 
   @Get('/me')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @UserRoles(UserRole.EMPLOYEE)
   async findMe(@Req() req, @Res() res) {
     const employee = await this.employeesService.findMe(req.userId);
     return res.status(HttpStatus.OK).json({
       employee,
-      message: `Get profile successfully`,
     });
   }
 
   @Get('/me/facilities')
-  @UseGuards(AuthGuard)
+  @UserRoles(UserRole.EMPLOYEE)
+  @UseGuards(AuthGuard, RolesGuard)
   async findMyFacilities(@Req() req, @Res() res) {
     const employee = await this.employeesService.findMyFacilities(req.userId);
     return res.status(HttpStatus.OK).json({
       employee,
-      message: `Get profile successfully`,
     });
   }
 
   @Get('/me/requests')
-  @UseGuards(AuthGuard)
+  @UserRoles(UserRole.EMPLOYEE)
+  @UseGuards(AuthGuard, RolesGuard)
   async findMyRequests(@Req() req, @Res() res) {
     const employee = await this.employeesService.findMyRequests(req.userId);
     return res.status(HttpStatus.OK).json({
       employee,
-      message: `Get profile successfully`,
     });
   }
 
   @Get(':id')
+  @UserRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   async findOne(@Param('id') id: string, @Res() res) {
     return res.status(HttpStatus.OK).json({
       employee: await this.employeesService.findOne(id),
@@ -97,7 +101,8 @@ export class EmployeesController {
   }
 
   @Put('me')
-  @UseGuards(AuthGuard)
+  @UserRoles(UserRole.EMPLOYEE)
+  @UseGuards(AuthGuard, RolesGuard)
   async updateMyself(
     @Body() updateEmployeeMyselfDto: UpdateEmployeeMyselfDto,
     @Req() req,
@@ -108,11 +113,13 @@ export class EmployeesController {
         +req.userId,
         updateEmployeeMyselfDto,
       ),
+      message: 'Cập nhật thông tin thành công',
     });
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard)
+  @UserRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   async updateByAdmin(
     @Param('id') id: string,
     @Body() updateEmployeeAdminDto: UpdateEmployeeAdminDto,
@@ -123,15 +130,23 @@ export class EmployeesController {
         +id,
         updateEmployeeAdminDto,
       ),
+      message: 'Cập nhật tài khoản cán bộ thành công',
     });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.employeesService.remove(+id);
+  @UserRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  async remove(@Param('id') id: string, @Res() res) {
+    await this.employeesService.remove(+id);
+    return res.status(HttpStatus.OK).json({
+      message: 'Xóa tài khoản cán bộ thành công',
+    });
   }
 
   @Put(':id/room')
+  @UserRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   async updateRoom(
     @Param('id') id: string,
     @Res() res,
@@ -144,6 +159,8 @@ export class EmployeesController {
   }
 
   @Delete(':id/room')
+  @UserRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   async removeRoom(@Param('id') id: string, @Res() res) {
     return res.status(HttpStatus.OK).json({
       employee: await this.employeesService.removeRoom(id),

@@ -3,9 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   Req,
   Res,
@@ -22,13 +20,17 @@ import { ApproveRequestDto } from './dto/approve-request.dto';
 import { CompleteRequestDto } from './dto/complete-request.dto';
 import { UnCompleteRequestDto } from './dto/uncomplete-request.dto';
 import { RejectRequestDto } from './dto/reject-request.dto';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { UserRoles } from 'src/common/decorators/user-roles.decorator';
+import { UserRole } from 'src/common/enums/user-role.enum';
 
 @Controller('requests')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class RequestsController {
   constructor(private readonly requestsService: RequestsService) {}
 
   @Post()
+  @UserRoles(UserRole.ADMIN, UserRole.EMPLOYEE)
   async create(
     @Body() createRequestDto: CreateRequestDto,
     @Req() req,
@@ -36,10 +38,12 @@ export class RequestsController {
   ) {
     return await res.status(HttpStatus.OK).json({
       request: await this.requestsService.create(createRequestDto, +req.userId),
+      message: 'Tạo yêu cầu thành công',
     });
   }
 
   @Get()
+  @UserRoles(UserRole.ADMIN)
   async findAll(@Res() res, @Query('status') status?: RequestStatus) {
     return res.status(HttpStatus.OK).json({
       requests: await this.requestsService.findAll(status),
@@ -47,18 +51,28 @@ export class RequestsController {
   }
 
   @Get(':id')
+  @UserRoles(UserRole.ADMIN, UserRole.EMPLOYEE)
   async findOne(@Param('id') id: string, @Res() res) {
     return res.status(HttpStatus.OK).json({
       request: await this.requestsService.findOne(+id),
     });
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRequestDto: UpdateRequestDto) {
-    return this.requestsService.update(+id, updateRequestDto);
+  @Put(':id')
+  @UserRoles(UserRole.ADMIN, UserRole.EMPLOYEE)
+  async update(
+    @Param('id') id: string,
+    @Body() updateRequestDto: UpdateRequestDto,
+    @Res() res,
+  ) {
+    return res.status(HttpStatus.OK).json({
+      request: await this.requestsService.update(+id, updateRequestDto),
+      message: 'Cập nhật yêu cầu thành công',
+    });
   }
 
   @Put(':id/assign')
+  @UserRoles(UserRole.ADMIN)
   async assignRequest(
     @Param('id') id: string,
     @Res() res,
@@ -66,17 +80,21 @@ export class RequestsController {
   ) {
     return res.status(HttpStatus.OK).json({
       request: await this.requestsService.assign(+id, approveRequestDto),
+      message: 'Bàn giao yêu cầu thành công',
     });
   }
 
   @Put(':id/process')
+  @UserRoles(UserRole.REPAIRMAN)
   async processRequest(@Param('id') id: string, @Res() res) {
     return res.status(HttpStatus.OK).json({
       request: await this.requestsService.process(+id),
+      message: 'Bắt đầu nhiệm vụ thành công',
     });
   }
 
   @Put(':id/complete')
+  @UserRoles(UserRole.REPAIRMAN)
   async completeRequest(
     @Param('id') id: string,
     @Res() res,
@@ -89,10 +107,12 @@ export class RequestsController {
         completeRequestDto,
         +req.userId,
       ),
+      message: 'Hoàn thành nhiệm vụ thành công',
     });
   }
 
   @Put(':id/uncomplete')
+  @UserRoles(UserRole.REPAIRMAN)
   async unCompleteRequest(
     @Param('id') id: string,
     @Res() res,
@@ -105,17 +125,21 @@ export class RequestsController {
         unCompleteRequestDto,
         +req.userId,
       ),
+      message: 'Đã gửi yêu cầu không thể hoàn thành nhiệm vụ',
     });
   }
 
   @Put(':id/delete')
+  @UserRoles(UserRole.ADMIN, UserRole.EMPLOYEE)
   async deleteRequest(@Param('id') id: string, @Res() res) {
     return res.status(HttpStatus.OK).json({
       request: await this.requestsService.delete(+id),
+      message: 'Xóa yêu cầu thành công',
     });
   }
 
   @Put(':id/reject')
+  @UserRoles(UserRole.ADMIN)
   async rejectRequest(
     @Param('id') id: string,
     @Res() res,
@@ -123,10 +147,12 @@ export class RequestsController {
   ) {
     return res.status(HttpStatus.OK).json({
       request: await this.requestsService.reject(+id, rejectRequestDto),
+      message: 'Từ chối yêu cầu thành công',
     });
   }
 
   @Put(':id/reject-task')
+  @UserRoles(UserRole.REPAIRMAN)
   async rejectTask(
     @Param('id') id: string,
     @Res() res,
@@ -139,11 +165,7 @@ export class RequestsController {
         unCompleteRequestDto,
         +req.userId,
       ),
+      message: 'Từ chối nhiệm vụ thành công',
     });
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.requestsService.remove(+id);
   }
 }

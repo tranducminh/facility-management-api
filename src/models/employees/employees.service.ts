@@ -18,6 +18,11 @@ import { Employee } from './entities/employee.entity';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from 'src/common/enums/notification-type.enum';
 import { UserRole } from 'src/common/enums/user-role.enum';
+import { Facility } from '../facilities/entities/facility.entity';
+import { Request } from '../requests/entities/request.entity';
+import { Replacement } from '../replacements/entities/replacement.entity';
+import { History } from '../histories/entities/history.entity';
+import { FacilityStatus } from 'src/common/enums/facility-status.enum';
 
 @Injectable()
 export class EmployeesService {
@@ -27,6 +32,14 @@ export class EmployeesService {
     private readonly employeeRepository: Repository<Employee>,
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
+    @InjectRepository(Facility)
+    private readonly facilityRepository: Repository<Facility>,
+    @InjectRepository(Request)
+    private readonly requestRepository: Repository<Request>,
+    @InjectRepository(Replacement)
+    private readonly replacementRepository: Repository<Replacement>,
+    @InjectRepository(History)
+    private readonly historyRepository: Repository<History>,
     private readonly notificationsService: NotificationsService,
   ) {}
 
@@ -51,7 +64,11 @@ export class EmployeesService {
           hashPassword: hashPassword,
         });
       }
-      return await this.employeeRepository.save(newEmployee);
+      const saveEmployee = await this.employeeRepository.save(newEmployee);
+      if (!saveEmployee) {
+        throw new NotFoundException('Tạo tài khoản cán bộ không thành công');
+      }
+      return saveEmployee;
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -70,6 +87,7 @@ export class EmployeesService {
       if (!hasRoom) {
         return {
           employees: await this.employeeRepository.find({
+            where: { isActive: true },
             skip: (offset - 1) * limit,
             take: limit,
             select: [
@@ -96,7 +114,7 @@ export class EmployeesService {
       }
       return {
         employees: await this.employeeRepository.find({
-          where: { hasRoom },
+          where: { hasRoom, isActive: true },
           skip: (offset - 1) * limit,
           take: limit,
           select: [
@@ -109,6 +127,7 @@ export class EmployeesService {
             'avatar',
             'phone',
             'hasRoom',
+            'isActive',
           ],
           relations: [
             'room',
@@ -131,6 +150,7 @@ export class EmployeesService {
       const employee = await this.employeeRepository.findOne(
         {
           identity: id,
+          isActive: true,
         },
         {
           relations: [
@@ -144,7 +164,7 @@ export class EmployeesService {
         },
       );
       if (!employee) {
-        throw new NotFoundException('Employee not found');
+        throw new NotFoundException('Không tìm thấy cán bộ');
       }
       return employee;
     } catch (error) {
@@ -184,6 +204,13 @@ export class EmployeesService {
     updateEmployeeAdminDto: UpdateEmployeeAdminDto,
   ) {
     try {
+      const employee = await this.employeeRepository.findOne(id, {
+        where: { isActive: true },
+      });
+      this.notificationsService.create({
+        receiver: employee,
+        type: NotificationType.UPDATED_PROFILE,
+      });
       if (updateEmployeeAdminDto.avatar) {
         const avatar = await uploadFileBase64(
           updateEmployeeAdminDto.avatar || '',
@@ -201,11 +228,6 @@ export class EmployeesService {
         email,
         phone,
       } = updateEmployeeAdminDto;
-      const employee = await this.employeeRepository.findOne(id);
-      this.notificationsService.create({
-        receiver: employee,
-        type: NotificationType.UPDATED_PROFILE,
-      });
       return await this.employeeRepository.update(id, {
         identity,
         name,
@@ -220,8 +242,34 @@ export class EmployeesService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} employee`;
+  async remove(id: number) {
+    try {
+      const employee = await this.employeeRepository.findOne(id, {
+        where: { isActive: true },
+        relations: ['facilities', 'requests', 'requests.replacements'],
+      });
+      if (!employee) {
+        throw new NotFoundException('Không tìm thấy cán bộ');
+      }
+      employee.requests.forEach(async (request) => {
+        this.requestRepository.update(request.id, { isActive: false });
+        request.replacements.forEach((replacement) => {
+          this.replacementRepository.update(replacement.id, {
+            isActive: false,
+          });
+        });
+      });
+      employee.facilities.forEach((facility) => {
+        this.facilityRepository.update(facility.id, {
+          employee: null,
+          status: FacilityStatus.READY,
+        });
+      });
+      await this.employeeRepository.update(id, { isActive: false, room: null });
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
   }
 
   async login(
@@ -233,16 +281,17 @@ export class EmployeesService {
     const { identity, password } = loginEmployeeDto;
     const employee = await this.employeeRepository.findOne({
       identity,
+      isActive: true,
     });
     if (!employee) {
-      throw new NotFoundException('Employee not found');
+      throw new NotFoundException('Không tìm thấy tài khoản');
     }
     const isAuth = await this.authenticationService.isMatchPassword(
       password,
       employee.hashPassword,
     );
     if (!isAuth) {
-      throw new UnauthorizedException('Password is incorrect');
+      throw new UnauthorizedException('Mật khẩu không chính xác');
     }
     return {
       employee,
@@ -256,9 +305,14 @@ export class EmployeesService {
 
   async findMe(id: number) {
     try {
-      return await this.employeeRepository.findOne(id, {
+      const employee = await this.employeeRepository.findOne(id, {
+        where: { isActive: true },
         relations: ['room', 'room.floor', 'room.floor.building'],
       });
+      if (!employee) {
+        throw new NotFoundException('Không tìm thấy tài khoản');
+      }
+      return employee;
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -267,7 +321,8 @@ export class EmployeesService {
 
   async findMyFacilities(id: number) {
     try {
-      return await this.employeeRepository.findOne(id, {
+      const employee = await this.employeeRepository.findOne(id, {
+        where: { isActive: true },
         relations: [
           'facilities',
           'facilities.configuration',
@@ -277,6 +332,10 @@ export class EmployeesService {
           'requests.repairman.specializes',
         ],
       });
+      if (!employee) {
+        throw new NotFoundException('Không tìm thấy tài khoản');
+      }
+      return employee;
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -285,7 +344,8 @@ export class EmployeesService {
 
   async findMyRequests(id: number) {
     try {
-      return await this.employeeRepository.findOne(id, {
+      const employee = await this.employeeRepository.findOne(id, {
+        where: { isActive: true },
         relations: [
           'requests',
           'requests.repairman',
@@ -297,6 +357,10 @@ export class EmployeesService {
           'requests.replacements',
         ],
       });
+      if (!employee) {
+        throw new NotFoundException('Không tìm thấy tài khoản');
+      }
+      return employee;
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -306,11 +370,19 @@ export class EmployeesService {
   async updateRoom(employeeIdentity: string, roomId: number) {
     try {
       const room = await this.roomRepository.findOne(roomId, {
+        where: { isActive: true },
         relations: ['floor', 'floor.building'],
       });
+      if (!room) {
+        throw new NotFoundException('Không tìm thấy phòng cần cập nhật');
+      }
       const employee = await this.employeeRepository.findOne({
         identity: employeeIdentity,
+        isActive: true,
       });
+      if (!employee) {
+        throw new NotFoundException('Không tìm thấy tài khoản cần cập nhật');
+      }
       const updatedEmployee = await this.employeeRepository.save(
         Object.assign(employee, { room }),
       );
@@ -331,6 +403,9 @@ export class EmployeesService {
       const employee = await this.employeeRepository.findOne({
         identity: employeeIdentity,
       });
+      if (!employee) {
+        throw new NotFoundException('Không tìm thấy tài khoản cần cập nhật');
+      }
       const updatedEmployee = await this.employeeRepository.save(
         Object.assign(employee, { room: null }),
       );

@@ -28,7 +28,7 @@ export class RolesGuard implements CanActivate {
       }
 
       const request = context.switchToHttp().getRequest();
-      const { token } = request.cookies;
+      const { token } = request.headers;
       if (!token) {
         throw new UnauthorizedException('Token is required');
       }

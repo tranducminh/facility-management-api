@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FacilityStatus } from 'src/common/enums/facility-status.enum';
 import { HistoryStatus } from 'src/common/enums/history-status.enum';
@@ -38,8 +43,12 @@ export class RequestsService {
   async create(createRequestDto: CreateRequestDto, employeeId: number) {
     try {
       const employee = await this.employeeRepository.findOne(employeeId, {
+        where: { isActive: true },
         relations: ['facilities'],
       });
+      if (!employee) {
+        throw new NotFoundException('Không tìm thấy tài khoản cán bộ');
+      }
       const isOwner = employee.facilities.filter(
         (facility) => facility.id === createRequestDto.facilityId,
       );
@@ -50,7 +59,11 @@ export class RequestsService {
       }
       const facility = await this.facilityRepository.findOne(
         createRequestDto.facilityId,
+        { where: { isActive: true } },
       );
+      if (!facility) {
+        throw new NotFoundException('Không tìm thấy thiết bị');
+      }
       await this.facilityRepository.update(facility.id, {
         status: FacilityStatus.ERROR,
       });
@@ -76,6 +89,7 @@ export class RequestsService {
     try {
       if (!status)
         return await this.requestRepository.find({
+          where: { isActive: true },
           relations: [
             'employee',
             'employee.room',
@@ -91,7 +105,7 @@ export class RequestsService {
           ],
         });
       return await this.requestRepository.find({
-        where: { status },
+        where: { status, isActive: true },
         relations: [
           'employee',
           'employee.room',
@@ -114,29 +128,53 @@ export class RequestsService {
 
   async findOne(id: number) {
     try {
-      return await this.requestRepository.findOne(id);
+      const request = await this.requestRepository.findOne(id, {
+        where: { isActive: true },
+      });
+      if (!request) {
+        throw new NotFoundException('Không tìm thấy yêu cầu');
+      }
     } catch (error) {
       console.log(error);
       catchError(error);
     }
   }
 
-  update(id: number, updateRequestDto: UpdateRequestDto) {
-    return `This action updates a #${id} request`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} request`;
+  async update(id: number, updateRequestDto: UpdateRequestDto) {
+    try {
+      const request = await this.requestRepository.findOne(id, {
+        where: { isActive: true },
+      });
+      if (!request) {
+        throw new NotFoundException('Không tìm thấy yêu cầu');
+      }
+      if (request.status === RequestStatus.PENDING) {
+        return await this.requestRepository.update(id, { ...updateRequestDto });
+      } else {
+        throw new BadRequestException('Không thể cập nhật yêu cầu');
+      }
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
   }
 
   async assign(id: number, approveRequestDto: ApproveRequestDto) {
     try {
       const repairman = await this.repairmanRepository.findOne(
         approveRequestDto.repairmanId,
+        { where: { isActive: true } },
       );
+      if (!repairman) {
+        throw new NotFoundException('Không tìm thấy tài khoản kỹ thuật viên');
+      }
       const request = await this.requestRepository.findOne(id, {
         relations: ['employee', 'facility'],
+        where: { isActive: true },
       });
+      if (!request) {
+        throw new NotFoundException('Không tìm thấy yêu cầu');
+      }
       this.facilityRepository.update(request.facility.id, {
         status: FacilityStatus.ERROR,
       });
@@ -162,9 +200,21 @@ export class RequestsService {
 
   async delete(id: number) {
     try {
-      return await this.requestRepository.update(id, {
-        status: RequestStatus.DELETED,
+      const request = await this.requestRepository.findOne(id, {
+        relations: ['facility'],
+        where: { isActive: true },
       });
+      if (!request) {
+        throw new NotFoundException('Không tìm thấy yêu cầu');
+      }
+      if (request.status === RequestStatus.PENDING) {
+        this.facilityRepository.update(request.facility.id, {
+          status: FacilityStatus.READY,
+        });
+        return await this.requestRepository.update(id, {
+          status: RequestStatus.DELETED,
+        });
+      }
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -175,7 +225,11 @@ export class RequestsService {
     try {
       const request = await this.requestRepository.findOne(id, {
         relations: ['repairman', 'employee', 'facility'],
+        where: { isActive: true },
       });
+      if (!request) {
+        throw new NotFoundException('Không tìm thấy yêu cầu');
+      }
       this.facilityRepository.update(request.facility.id, {
         status: FacilityStatus.REPAIRING,
       });
@@ -206,9 +260,16 @@ export class RequestsService {
   ) {
     try {
       const repairman = await this.repairmanRepository.findOne(repairmanId);
+      if (!repairman) {
+        throw new NotFoundException('Không tìm thấy tài khoản kỹ thuật viên');
+      }
       const request = await this.requestRepository.findOne(id, {
         relations: ['repairman', 'employee', 'facility'],
+        where: { isActive: true },
       });
+      if (!request) {
+        throw new NotFoundException('Không tìm thấy yêu cầu');
+      }
       this.facilityRepository.update(request.facility.id, {
         status: FacilityStatus.READY,
       });
@@ -245,10 +306,19 @@ export class RequestsService {
     repairmanId: number,
   ) {
     try {
-      const repairman = await this.repairmanRepository.findOne(repairmanId);
+      const repairman = await this.repairmanRepository.findOne(repairmanId, {
+        where: { isActive: true },
+      });
+      if (!repairman) {
+        throw new NotFoundException('Không tìm thấy tài khoản kỹ thuật viên');
+      }
       const request = await this.requestRepository.findOne(id, {
         relations: ['facility'],
+        where: { isActive: true },
       });
+      if (!request) {
+        throw new NotFoundException('Không tìm thấy yêu cầu');
+      }
       this.facilityRepository.update(request.facility.id, {
         status: FacilityStatus.ERROR,
       });
@@ -284,7 +354,11 @@ export class RequestsService {
     try {
       const request = await this.requestRepository.findOne(id, {
         relations: ['employee', 'facility'],
+        where: { isActive: true },
       });
+      if (!request) {
+        throw new NotFoundException('Không tìm thấy yêu cầu');
+      }
       this.facilityRepository.update(request.facility.id, {
         status: FacilityStatus.READY,
       });
@@ -309,10 +383,19 @@ export class RequestsService {
     repairmanId: number,
   ) {
     try {
-      const repairman = await this.repairmanRepository.findOne(repairmanId);
+      const repairman = await this.repairmanRepository.findOne(repairmanId, {
+        where: { isActive: true },
+      });
+      if (!repairman) {
+        throw new NotFoundException('Không tìm thấy tài khoản kỹ thuật viên');
+      }
       const request = await this.requestRepository.findOne(id, {
         relations: ['facility'],
+        where: { isActive: true },
       });
+      if (!request) {
+        throw new NotFoundException('Không tìm thấy yêu cầu');
+      }
       this.facilityRepository.update(request.facility.id, {
         status: FacilityStatus.ERROR,
       });

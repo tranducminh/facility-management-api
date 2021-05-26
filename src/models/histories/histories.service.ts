@@ -21,7 +21,9 @@ export class HistoriesService {
   }
 
   async findOne(id: number) {
-    return await this.historyRepository.findOne(id);
+    return await this.historyRepository.findOne(id, {
+      where: { isActive: true },
+    });
   }
 
   update(id: number, updateHistoryDto: UpdateHistoryDto) {

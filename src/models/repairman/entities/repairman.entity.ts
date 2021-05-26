@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { History } from 'src/models/histories/entities/history.entity';
 import { Request } from 'src/models/requests/entities/request.entity';
 import { Specialize } from 'src/models/specializes/entities/specialize.entity';
@@ -11,7 +17,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Notification } from 'src/models/notifications/entities/notification.entity';
 
 @Entity('repairman')
 export class Repairman {
@@ -40,6 +45,18 @@ export class Repairman {
   @IsString()
   phone?: string;
 
+  @Column({ nullable: true, type: 'timestamp', name: 'date_of_birth' })
+  dateOfBirth?: Date;
+
+  @Column({ nullable: true })
+  @IsEmail()
+  @IsString()
+  email?: string;
+
+  @Column({ nullable: true })
+  @IsString()
+  avatar?: string;
+
   @Column({
     nullable: false,
     type: 'longtext',
@@ -53,6 +70,11 @@ export class Repairman {
   @IsNotEmpty()
   @IsString()
   channel: string;
+
+  @Column({ nullable: false, name: 'is_active', default: true })
+  @IsNotEmpty()
+  @IsBoolean()
+  isActive: boolean;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;
@@ -86,14 +108,4 @@ export class Repairman {
     cascade: true,
   })
   histories: History[];
-
-  // @OneToMany(() => Notification, (notification) => notification.receiver, {
-  //   cascade: true,
-  // })
-  // sentNotifications: Notification[];
-
-  // @OneToMany(() => Notification, (notification) => notification.sender, {
-  //   cascade: true,
-  // })
-  // notifications: Notification[];
 }

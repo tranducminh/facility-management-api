@@ -6,7 +6,10 @@ import { History } from './entities/history.entity';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([History]), JwtModule.register({})],
+  imports: [
+    TypeOrmModule.forFeature([History]),
+    JwtModule.register({ secret: process.env.JWT_SECRET_KEY }),
+  ],
   controllers: [HistoriesController],
   providers: [HistoriesService],
 })

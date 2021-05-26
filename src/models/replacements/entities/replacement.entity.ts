@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 import { Facility } from 'src/models/facilities/entities/facility.entity';
 import { Request } from 'src/models/requests/entities/request.entity';
 import {
@@ -30,6 +30,11 @@ export class Replacement {
   @IsString()
   @IsNotEmpty()
   target: string;
+
+  @Column({ nullable: false, name: 'is_active', default: true })
+  @IsNotEmpty()
+  @IsBoolean()
+  isActive: boolean;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;

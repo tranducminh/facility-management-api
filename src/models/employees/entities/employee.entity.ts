@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -78,6 +79,11 @@ export class Employee {
   @IsNotEmpty()
   @IsString()
   channel: string;
+
+  @Column({ nullable: false, name: 'is_active', default: true })
+  @IsNotEmpty()
+  @IsBoolean()
+  isActive: boolean;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;

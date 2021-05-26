@@ -3,19 +3,18 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   Res,
   HttpStatus,
   UseGuards,
   Req,
 } from '@nestjs/common';
+import { UserRoles } from 'src/common/decorators/user-roles.decorator';
+import { UserRole } from 'src/common/enums/user-role.enum';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
 import { AdminsService } from './admins.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { LoginAdminDto } from './dto/login-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
 
 @Controller('admins')
 export class AdminsController {
@@ -26,44 +25,27 @@ export class AdminsController {
     const result = await this.adminsService.login(loginAdminDto);
     return res.status(HttpStatus.OK).json({
       data: { ...result },
-      message: 'Login successfully',
+      message: 'Đăng nhập thành công',
     });
   }
 
   @Post()
+  @UseGuards(AuthGuard, RolesGuard)
   async create(@Body() createAdminDto: CreateAdminDto, @Res() res) {
     return res.status(HttpStatus.OK).json({
       admin: await this.adminsService.create(createAdminDto),
+      message: 'Tạo tài khoản admin thành công',
     });
   }
 
   @Get('/me')
-  @UseGuards(AuthGuard)
+  @UserRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   async findMe(@Req() req, @Res() res) {
     const admin = await this.adminsService.findMe(req.userId);
     return res.status(HttpStatus.OK).json({
       admin,
-      message: `Get profile successfully`,
+      message: `Lấy thông tin tài khoản thành công`,
     });
-  }
-
-  @Get()
-  findAll() {
-    return this.adminsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adminsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminsService.update(+id, updateAdminDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminsService.remove(+id);
   }
 }

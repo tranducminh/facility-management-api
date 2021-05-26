@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Res,
@@ -11,12 +10,17 @@ import {
   Query,
   UseGuards,
   Req,
+  Put,
 } from '@nestjs/common';
 import { RepairmanService } from './repairman.service';
 import { CreateRepairmanDto } from './dto/create-repairman.dto';
-import { UpdateRepairmanDto } from './dto/update-repairman.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { LoginRepairmanDto } from './dto/login-repairman.dto';
+import { UpdateRepairmanMyselfDto } from './dto/update-repairman-myself.dto';
+import { UpdateRepairmanAdminDto } from './dto/update-repairman-admin.dto';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { UserRoles } from 'src/common/decorators/user-roles.decorator';
+import { UserRole } from 'src/common/enums/user-role.enum';
 
 @Controller('repairman')
 export class RepairmanController {
@@ -27,18 +31,23 @@ export class RepairmanController {
     const result = await this.repairmanService.login(loginRepairmanDto);
     return res.status(HttpStatus.OK).json({
       data: { ...result },
-      message: 'Login successfully',
+      message: 'Đăng nhập thành công',
     });
   }
 
   @Post()
+  @UserRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   async create(@Body() createRepairmanDto: CreateRepairmanDto, @Res() res) {
     return res.status(HttpStatus.OK).json({
       repairman: await this.repairmanService.create(createRepairmanDto),
+      message: 'Tạo tài khoản kỹ thuật viên thành công',
     });
   }
 
   @Get()
+  @UserRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   async findAll(@Res() res, @Query('specialize') specialize?: string) {
     return res.status(HttpStatus.OK).json({
       repairman: await this.repairmanService.findAll(specialize),
@@ -46,7 +55,8 @@ export class RepairmanController {
   }
 
   @Get('me')
-  @UseGuards(AuthGuard)
+  @UserRoles(UserRole.REPAIRMAN)
+  @UseGuards(AuthGuard, RolesGuard)
   async findMe(@Res() res, @Req() req) {
     const { userId } = req;
     return res.status(HttpStatus.OK).json({
@@ -55,7 +65,8 @@ export class RepairmanController {
   }
 
   @Get('me/requests')
-  @UseGuards(AuthGuard)
+  @UserRoles(UserRole.REPAIRMAN)
+  @UseGuards(AuthGuard, RolesGuard)
   async findMyRequest(@Param('id') id: string, @Res() res, @Req() req) {
     const { userId } = req;
     return res.status(HttpStatus.OK).json({
@@ -64,7 +75,8 @@ export class RepairmanController {
   }
 
   @Get('me/histories')
-  @UseGuards(AuthGuard)
+  @UserRoles(UserRole.REPAIRMAN)
+  @UseGuards(AuthGuard, RolesGuard)
   async findMyHistory(@Param('id') id: string, @Res() res, @Req() req) {
     const { userId } = req;
     return res.status(HttpStatus.OK).json({
@@ -73,22 +85,54 @@ export class RepairmanController {
   }
 
   @Get(':id')
+  @UserRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   async findOne(@Param('id') id: string, @Res() res) {
     return res.status(HttpStatus.OK).json({
       repairman: await this.repairmanService.findOne(id),
     });
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateRepairmanDto: UpdateRepairmanDto,
+  @Put('me')
+  @UserRoles(UserRole.REPAIRMAN)
+  @UseGuards(AuthGuard, RolesGuard)
+  async updateMyself(
+    @Body() updateRepairmanMyselfDto: UpdateRepairmanMyselfDto,
+    @Req() req,
+    @Res() res,
   ) {
-    return this.repairmanService.update(+id, updateRepairmanDto);
+    return res.status(HttpStatus.OK).json({
+      repairman: await this.repairmanService.updateMyself(
+        +req.userId,
+        updateRepairmanMyselfDto,
+      ),
+      message: 'Cập nhật thông tin thành công',
+    });
+  }
+
+  @Put(':id')
+  @UserRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  async updateByAdmin(
+    @Param('id') id: string,
+    @Body() updateRepairmanAdminDto: UpdateRepairmanAdminDto,
+    @Res() res,
+  ) {
+    return res.status(HttpStatus.OK).json({
+      repairman: await this.repairmanService.updateByAdmin(
+        +id,
+        updateRepairmanAdminDto,
+      ),
+      message: 'Cập nhật tài khoản kỹ thuật viên thành công',
+    });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.repairmanService.remove(+id);
+  @UserRoles(UserRole.ADMIN)
+  async remove(@Param('id') id: string, @Res() res) {
+    await this.repairmanService.remove(+id);
+    return res.status(HttpStatus.OK).json({
+      message: 'Xóa tài khoản kỹ thuật viên thành công',
+    });
   }
 }

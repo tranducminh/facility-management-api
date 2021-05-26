@@ -6,7 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Notification } from './entities/notification.entity';
 
 @Module({
-  imports: [JwtModule.register({}), TypeOrmModule.forFeature([Notification])],
+  imports: [
+    JwtModule.register({ secret: process.env.JWT_SECRET_KEY }),
+    TypeOrmModule.forFeature([Notification]),
+  ],
   controllers: [NotificationsController],
   providers: [NotificationsService],
   exports: [NotificationsService],

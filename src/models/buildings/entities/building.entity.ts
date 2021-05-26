@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 import { Floor } from 'src/models/floors/entities/floor.entity';
 import { Room } from 'src/models/rooms/entities/room.entity';
 import {
@@ -20,6 +20,11 @@ export class Building {
   @IsNotEmpty()
   @IsString()
   name: string;
+
+  @Column({ nullable: false, name: 'is_active', default: true })
+  @IsNotEmpty()
+  @IsBoolean()
+  isActive: boolean;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;

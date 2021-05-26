@@ -21,6 +21,7 @@ export class AuthGuard implements CanActivate {
        * check token is null or not
        */
       if (!token) {
+        console.log(token);
         throw new UnauthorizedException('Token is required');
       }
 

@@ -3,17 +3,21 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
   Res,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { ReplacementsService } from './replacements.service';
 import { CreateReplacementDto } from './dto/create-replacement.dto';
 import { UpdateReplacementDto } from './dto/update-replacement.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @Controller('replacements')
+@UseGuards(AuthGuard, RolesGuard)
 export class ReplacementsController {
   constructor(private readonly replacementsService: ReplacementsService) {}
 
@@ -34,7 +38,7 @@ export class ReplacementsController {
     return this.replacementsService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body() updateReplacementDto: UpdateReplacementDto,

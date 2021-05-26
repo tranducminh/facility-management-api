@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
 import { CreateRoomFacilityDto } from './dto/create-room-facility.dto';
 import { UpdateRoomFacilityDto } from './dto/update-room-facility.dto';
 
 @Injectable()
+@UseGuards(AuthGuard, RolesGuard)
 export class RoomFacilitiesService {
   create(createRoomFacilityDto: CreateRoomFacilityDto) {
     return 'This action adds a new roomFacility';

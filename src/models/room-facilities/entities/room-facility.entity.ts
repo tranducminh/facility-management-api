@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 import { FacilityType } from 'src/models/facility-types/entities/facility-type.entity';
 import { Room } from 'src/models/rooms/entities/room.entity';
 import {
@@ -15,6 +15,16 @@ export class RoomFacility {
   @PrimaryGeneratedColumn()
   @IsNotEmpty()
   id: number;
+
+  @Column({ nullable: false })
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @Column({ nullable: false, name: 'is_active', default: true })
+  @IsNotEmpty()
+  @IsBoolean()
+  isActive: boolean;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;

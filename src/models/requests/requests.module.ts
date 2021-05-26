@@ -13,7 +13,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Request, Employee, Facility, Repairman, History]),
-    JwtModule.register({}),
+    JwtModule.register({ secret: process.env.JWT_SECRET_KEY }),
     NotificationsModule,
   ],
   controllers: [RequestsController],

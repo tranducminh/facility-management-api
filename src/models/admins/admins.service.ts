@@ -10,7 +10,6 @@ import { Repository } from 'typeorm';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { LoginAdminDto } from './dto/login-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admin } from './entities/admin.entity';
 
 @Injectable()
@@ -33,14 +32,14 @@ export class AdminsService {
         email,
       });
       if (!admin) {
-        throw new NotFoundException('Admin not found');
+        throw new NotFoundException('Không tìm thấy tài khoản');
       }
       const isAuth = await this.authenticationService.isMatchPassword(
         password,
         admin.hashPassword,
       );
       if (!isAuth) {
-        throw new UnauthorizedException('Password is incorrect');
+        throw new UnauthorizedException('Mật khẩu không chính xác');
       }
       return {
         admin,
@@ -75,26 +74,14 @@ export class AdminsService {
 
   async findMe(id: number) {
     try {
-      return await this.adminRepository.findOne(id);
+      const admin = await this.adminRepository.findOne(id);
+      if (!admin) {
+        throw new NotFoundException('Không tìm thấy tài khoản');
+      }
+      return admin;
     } catch (error) {
       console.log(error);
       catchError(error);
     }
-  }
-
-  findAll() {
-    return `This action returns all admins`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} admin`;
-  }
-
-  update(id: number, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
   }
 }

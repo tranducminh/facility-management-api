@@ -9,7 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     AuthenticationModule,
-    JwtModule.register({}),
+    JwtModule.register({ secret: process.env.JWT_SECRET_KEY }),
     TypeOrmModule.forFeature([Admin]),
   ],
   controllers: [AdminsController],

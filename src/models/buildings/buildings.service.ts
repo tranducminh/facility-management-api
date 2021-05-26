@@ -1,13 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BooleanStatus } from 'src/common/enums/boolean-status.enum';
 import { catchError } from 'src/common/helpers/catch-error';
 import { Repository } from 'typeorm';
+import { Employee } from '../employees/entities/employee.entity';
 import { Floor } from '../floors/entities/floor.entity';
+import { RoomFacility } from '../room-facilities/entities/room-facility.entity';
 import { Room } from '../rooms/entities/room.entity';
 import { CreateBuildingDto } from './dto/create-building.dto';
-import { UpdateBuildingDto } from './dto/update-building.dto';
 import { Building } from './entities/building.entity';
-
 @Injectable()
 export class BuildingsService {
   constructor(
@@ -17,52 +22,61 @@ export class BuildingsService {
     private readonly roomRepository: Repository<Room>,
     @InjectRepository(Floor)
     private readonly floorRepository: Repository<Floor>,
+    @InjectRepository(Employee)
+    private readonly employeeRepository: Repository<Employee>,
+    @InjectRepository(RoomFacility)
+    private readonly roomFacilityRepository: Repository<RoomFacility>,
   ) {}
 
   async create(createBuildingDto: CreateBuildingDto): Promise<Building> {
     try {
       const newBuilding = this.buildingRepository.create(createBuildingDto);
-      return await this.buildingRepository.save(newBuilding);
+      const saveBuilding = await this.buildingRepository.save(newBuilding);
+      if (!saveBuilding) {
+        throw new BadRequestException('Tạo tòa nhà không thành công');
+      }
+      return saveBuilding;
     } catch (error) {
       console.log(error);
       catchError(error);
     }
   }
 
-  async findAll(): Promise<Building[]> {
+  async findAll() {
     try {
-      return await this.buildingRepository.find({
-        relations: ['floors', 'floors.rooms', 'floors.rooms.employees'],
-        order: {
-          name: 'ASC',
-        },
-      });
-
-      // return await this.buildingRepository
-      //   .createQueryBuilder('building')
-      //   .innerJoinAndSelect('building.floors', 'floor')
-      //   .innerJoinAndSelect('floor.rooms', 'room')
-      //   .innerJoinAndSelect('room.employees', 'employee')
-      //   .innerJoinAndSelect('employee.requests', 'request')
-      //   .where("request.status = 'pending'")
-      //   .orderBy('building.created_at', 'DESC')
-      //   .getManyAndCount();
+      return await this.buildingRepository
+        .createQueryBuilder('building')
+        .leftJoinAndSelect('building.floors', 'floor')
+        .leftJoinAndSelect('floor.rooms', 'room')
+        .leftJoinAndSelect('room.employees', 'employee')
+        .leftJoinAndSelect('employee.requests', 'request')
+        .where('building.isActive = true')
+        .orderBy('building.name', 'ASC')
+        .getMany();
     } catch (error) {
       console.log(error);
       catchError(error);
     }
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} building`;
   }
 
   async findOneByName(name: string): Promise<Building> {
     try {
-      return await this.buildingRepository.findOne(
-        { name },
-        { relations: ['floors', 'floors.rooms'] },
-      );
+      const building = await this.buildingRepository
+        .createQueryBuilder('building')
+        .leftJoinAndSelect('building.floors', 'floor')
+        .leftJoinAndSelect('floor.rooms', 'room')
+        .leftJoinAndSelect('room.employees', 'employee')
+        .leftJoinAndSelect('employee.requests', 'requests')
+        .leftJoinAndSelect('employee.facilities', 'facility')
+        .leftJoinAndSelect('facility.facilityType', 'facilityType')
+        .where('building.isActive = true')
+        .andWhere('building.name = :name')
+        .setParameters({ isActive: 'true', name })
+        .getOne();
+      if (!building) {
+        throw new NotFoundException('Không tìm thấy tòa nhà');
+      }
+      return building;
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -71,12 +85,16 @@ export class BuildingsService {
 
   async findAllFloor(buildingName: string) {
     try {
-      const building = await this.buildingRepository.findOne({
-        name: buildingName,
-      });
+      const building = await this.buildingRepository
+        .createQueryBuilder('building')
+        .leftJoinAndSelect('building.floors', 'floor')
+        .where('building.isActive = true')
+        .where('building.name = :name')
+        .setParameters({ name: buildingName })
+        .getOne();
 
       if (!building) {
-        throw new NotFoundException('Floor not found');
+        throw new NotFoundException('Không tìm thấy tòa nhà');
       }
       return building.floors;
     } catch (error) {
@@ -89,7 +107,12 @@ export class BuildingsService {
     try {
       const building = await this.buildingRepository.findOne({
         name: buildingName,
+        isActive: true,
       });
+
+      if (!building) {
+        throw new NotFoundException('Không tìm thấy tòa nhà');
+      }
 
       const floor = await this.floorRepository.findOne(
         {
@@ -97,12 +120,13 @@ export class BuildingsService {
           building: {
             id: building.id,
           },
+          isActive: true,
         },
         { relations: ['building', 'rooms'] },
       );
 
       if (!floor) {
-        throw new NotFoundException('Floor not found');
+        throw new NotFoundException('Không tìm thấy tầng');
       }
       return floor;
     } catch (error) {
@@ -111,13 +135,19 @@ export class BuildingsService {
     }
   }
 
-  async findAllRoom(buildingName: string, floorName: string) {
+  async findAllRoom(buildingName: string, floorName: string): Promise<Room[]> {
     try {
       const building = await this.buildingRepository.findOne({
         name: buildingName,
+        isActive: true,
       });
 
+      if (!building) {
+        throw new NotFoundException('Không tìm thấy tòa nhà');
+      }
+
       const floor = await this.floorRepository.findOne({
+        isActive: true,
         name: floorName,
         building: {
           id: building.id,
@@ -127,7 +157,19 @@ export class BuildingsService {
       if (!floor) {
         throw new NotFoundException('Floor not found');
       }
-      return floor.rooms;
+
+      if (!floor) {
+        throw new NotFoundException('Không tìm thấy tầng');
+      }
+
+      return await this.roomRepository.find({
+        where: {
+          isActive: true,
+          floor: {
+            id: floor.id,
+          },
+        },
+      });
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -138,36 +180,41 @@ export class BuildingsService {
     try {
       const building = await this.buildingRepository.findOne({
         name: buildingName,
+        isActive: true,
       });
 
+      if (!building) {
+        throw new NotFoundException('Không tìm thấy tòa nhà');
+      }
+
       const floor = await this.floorRepository.findOne({
+        isActive: true,
         name: floorName,
         building: {
           id: building.id,
         },
       });
 
-      const room = await this.roomRepository.findOne(
-        {
-          name: roomName,
-          floor: {
-            id: floor.id,
-          },
-        },
-        {
-          relations: [
-            'floor',
-            'floor.building',
-            'employees',
-            'employees.facilities',
-            'employees.facilities.facilityType',
-            'employees.facilities.configuration',
-            'roomFacilities',
-          ],
-        },
-      );
+      if (!floor) {
+        throw new NotFoundException('Không tìm thấy tầng');
+      }
+
+      const room = await this.roomRepository
+        .createQueryBuilder('room')
+        .leftJoinAndSelect('room.floor', 'floor')
+        .leftJoinAndSelect('floor.building', 'building')
+        .leftJoinAndSelect('room.employees', 'employee')
+        .leftJoinAndSelect('employee.facilities', 'facility')
+        .leftJoinAndSelect('facility.facilityType', 'facilityType')
+        .leftJoinAndSelect('facility.configuration', 'configuration')
+        .leftJoinAndSelect('room.roomFacilities', 'roomFacilities')
+        .where('room.isActive = true')
+        .andWhere('room.name = :name')
+        .andWhere('floor.id = :floorId')
+        .setParameters({ name: roomName, floorId: floor.id })
+        .getOne();
       if (!room) {
-        throw new NotFoundException('Room not found');
+        throw new NotFoundException('Không tìm thấy phòng');
       }
       return room;
     } catch (error) {
@@ -176,11 +223,42 @@ export class BuildingsService {
     }
   }
 
-  update(id: number, updateBuildingDto: UpdateBuildingDto) {
-    return `This action updates a #${id} building`;
-  }
+  async remove(id: number) {
+    try {
+      const building = await this.buildingRepository.findOne(id, {
+        relations: [
+          'floors',
+          'floors.rooms',
+          'floors.rooms.employees',
+          'floors.rooms.roomFacilities',
+        ],
+      });
 
-  remove(id: number) {
-    return `This action removes a #${id} building`;
+      if (!building) {
+        throw new NotFoundException('Không tìm thấy tòa nhà');
+      }
+
+      building.floors.forEach((floor) => {
+        this.floorRepository.update(floor.id, { isActive: false });
+        floor.rooms.forEach((room) => {
+          room.employees.forEach((employee) => {
+            this.employeeRepository.update(employee.id, {
+              room: null,
+              hasRoom: BooleanStatus.FALSE,
+            });
+          });
+          room.roomFacilities.forEach((roomFacility) => {
+            this.roomFacilityRepository.update(roomFacility.id, {
+              isActive: false,
+            });
+          });
+          this.roomRepository.update(room.id, { isActive: false });
+        });
+      });
+      await this.buildingRepository.update(id, { isActive: false });
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
   }
 }

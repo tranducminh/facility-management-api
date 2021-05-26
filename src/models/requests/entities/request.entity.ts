@@ -1,4 +1,10 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { RequestStatus } from 'src/common/enums/request-status.enum';
 import { Employee } from 'src/models/employees/entities/employee.entity';
 import { Facility } from 'src/models/facilities/entities/facility.entity';
@@ -45,6 +51,11 @@ export class Request {
   @IsOptional()
   @IsString()
   uncompletedReason?: string;
+
+  @Column({ nullable: false, name: 'is_active', default: true })
+  @IsNotEmpty()
+  @IsBoolean()
+  isActive: boolean;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;

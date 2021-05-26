@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { FacilityType } from 'src/models/facility-types/entities/facility-type.entity';
 import { Repairman } from 'src/models/repairman/entities/repairman.entity';
 import {
@@ -16,9 +16,20 @@ export class Specialize {
   @IsNotEmpty()
   id: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: true })
+  @IsNotEmpty()
+  @IsBoolean()
+  active?: boolean;
+
+  @Column({ nullable: true, type: 'longtext' })
+  @IsString()
   @IsOptional()
   description?: string;
+
+  @Column({ nullable: false, name: 'is_active', default: true })
+  @IsNotEmpty()
+  @IsBoolean()
+  isActive: boolean;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;

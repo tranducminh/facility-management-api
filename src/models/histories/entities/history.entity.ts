@@ -1,4 +1,10 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { HistoryStatus } from 'src/common/enums/history-status.enum';
 import { Repairman } from 'src/models/repairman/entities/repairman.entity';
 import { Request } from 'src/models/requests/entities/request.entity';
@@ -25,6 +31,11 @@ export class History {
   @IsOptional()
   @IsString()
   uncompletedReason?: string;
+
+  @Column({ nullable: false, name: 'is_active', default: true })
+  @IsNotEmpty()
+  @IsBoolean()
+  isActive: boolean;
 
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;

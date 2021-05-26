@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Facility } from 'src/models/facilities/entities/facility.entity';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -126,6 +126,11 @@ export class Configuration {
   @IsOptional()
   @IsString()
   nodeName?: string;
+
+  @Column({ nullable: false, name: 'is_active', default: true })
+  @IsNotEmpty()
+  @IsBoolean()
+  isActive: boolean;
 
   @OneToOne(() => Facility, (facility) => facility.configuration)
   facility: Facility;

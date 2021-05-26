@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { CreateConfigurationDto } from 'src/models/configurations/dto/create-configuration.dto';
+import { Configuration } from 'src/models/configurations/entities/configuration.entity';
 
 export class CreateFacilityDto {
   @IsString()
@@ -23,5 +24,5 @@ export class CreateFacilityDto {
   facilityType: string;
 
   @IsOptional()
-  configuration?: CreateConfigurationDto;
+  configuration?: Configuration;
 }

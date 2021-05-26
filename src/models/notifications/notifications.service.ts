@@ -10,7 +10,6 @@ import { Facility } from '../facilities/entities/facility.entity';
 import { Repairman } from '../repairman/entities/repairman.entity';
 import { Request } from '../requests/entities/request.entity';
 import { Room } from '../rooms/entities/room.entity';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { Notification } from './entities/notification.entity';
 
 @Injectable()
@@ -91,22 +90,24 @@ export class NotificationsService {
             ? `Thông tin cá nhân của bạn đã được cập nhật`
             : null,
       });
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const Pusher = require('pusher');
-      const pusher = new Pusher({
-        appId: '1061394',
-        key: '75ba4bf21a42e1773cf4',
-        secret: 'd3370d6d6f3ff59c6bcd',
-        cluster: 'ap1',
-        // encrypted: true,
-      });
 
       const newNotification = await this.notificationRepository.save(
         notification,
       );
-      await pusher.trigger(newNotification.receiverChannel, 'common', {
-        notification: newNotification,
-      });
+      if (process.env.ENABLED_NOTIFICATION === 'true') {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const Pusher = require('pusher');
+        const pusher = new Pusher({
+          appId: '1061394',
+          key: '75ba4bf21a42e1773cf4',
+          secret: 'd3370d6d6f3ff59c6bcd',
+          cluster: 'ap1',
+          // encrypted: true,
+        });
+        await pusher.trigger(newNotification.receiverChannel, 'common', {
+          notification: newNotification,
+        });
+      }
       return newNotification;
     } catch (error) {
       console.log(error);
@@ -147,17 +148,5 @@ export class NotificationsService {
       console.log(error);
       catchError(error);
     }
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} notification`;
-  }
-
-  update(id: number, updateNotificationDto: UpdateNotificationDto) {
-    return `This action updates a #${id} notification`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
   }
 }
