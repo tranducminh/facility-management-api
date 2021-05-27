@@ -23,6 +23,7 @@ import { Request } from '../requests/entities/request.entity';
 import { Replacement } from '../replacements/entities/replacement.entity';
 import { History } from '../histories/entities/history.entity';
 import { FacilityStatus } from 'src/common/enums/facility-status.enum';
+import { ChangePasswordDto } from 'src/common/dto/change-password.dto';
 
 @Injectable()
 export class EmployeesService {
@@ -301,6 +302,26 @@ export class EmployeesService {
         employee.channel,
       ),
     };
+  }
+
+  async changePassword(id: number, changePasswordDto: ChangePasswordDto) {
+    const employee = await this.employeeRepository.findOne(id);
+    if (!employee) {
+      throw new NotFoundException('Không tìm thấy cán bộ');
+    }
+    const { oldPassword, newPassword } = changePasswordDto;
+    const isAuth = await this.authenticationService.isMatchPassword(
+      oldPassword,
+      employee.hashPassword,
+    );
+    if (!isAuth) {
+      throw new UnauthorizedException('Mật khẩu hiện tại không chính xác');
+    }
+    return await this.employeeRepository.update(id, {
+      hashPassword: await this.authenticationService.generateHashPassword(
+        newPassword,
+      ),
+    });
   }
 
   async findMe(id: number) {

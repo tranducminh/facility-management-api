@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ChangePasswordDto } from 'src/common/dto/change-password.dto';
 import { NotificationType } from 'src/common/enums/notification-type.enum';
 import { RequestStatus } from 'src/common/enums/request-status.enum';
 import { UserRole } from 'src/common/enums/user-role.enum';
@@ -229,6 +230,26 @@ export class RepairmanService {
         repairman.channel,
       ),
     };
+  }
+
+  async changePassword(id: number, changePasswordDto: ChangePasswordDto) {
+    const repairman = await this.repairmanRepository.findOne(id);
+    if (!repairman) {
+      throw new NotFoundException('Không tìm thấy kỹ thuật viên');
+    }
+    const { oldPassword, newPassword } = changePasswordDto;
+    const isAuth = await this.authenticationService.isMatchPassword(
+      oldPassword,
+      repairman.hashPassword,
+    );
+    if (!isAuth) {
+      throw new UnauthorizedException('Mật khẩu hiện tại không chính xác');
+    }
+    return await this.repairmanRepository.update(id, {
+      hashPassword: await this.authenticationService.generateHashPassword(
+        newPassword,
+      ),
+    });
   }
 
   async updateMyself(

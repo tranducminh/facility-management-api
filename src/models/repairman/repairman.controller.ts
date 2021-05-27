@@ -21,6 +21,7 @@ import { UpdateRepairmanAdminDto } from './dto/update-repairman-admin.dto';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { UserRoles } from 'src/common/decorators/user-roles.decorator';
 import { UserRole } from 'src/common/enums/user-role.enum';
+import { ChangePasswordDto } from 'src/common/dto/change-password.dto';
 
 @Controller('repairman')
 export class RepairmanController {
@@ -32,6 +33,18 @@ export class RepairmanController {
     return res.status(HttpStatus.OK).json({
       data: { ...result },
       message: 'Đăng nhập thành công',
+    });
+  }
+
+  @Put('/change-password')
+  async changePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Res() res,
+    @Req() req,
+  ) {
+    await this.repairmanService.changePassword(req.userId, changePasswordDto);
+    return res.status(HttpStatus.OK).json({
+      message: 'Cập nhật mật khẩu thành công',
     });
   }
 

@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ChangePasswordDto } from 'src/common/dto/change-password.dto';
 import { UserRole } from 'src/common/enums/user-role.enum';
 import { catchError } from 'src/common/helpers/catch-error';
 import { Repository } from 'typeorm';
@@ -53,6 +54,25 @@ export class AdminsService {
       console.log(error);
       catchError(error);
     }
+  }
+
+  async changePassword(id: number, changePasswordDto: ChangePasswordDto) {
+    const admin = await this.adminRepository.findOne(id);
+    if (!admin) {
+      throw new NotFoundException('Không tìm thấy admin');
+    }
+    const { oldPassword, newPassword } = changePasswordDto;
+    const isAuth = await this.authenticationService.isMatchPassword(
+      oldPassword,
+      admin.hashPassword,
+    );
+    if (!isAuth) {
+      throw new UnauthorizedException('Mật khẩu hiện tại không chính xác');
+    }
+    admin.hashPassword = await this.authenticationService.generateHashPassword(
+      newPassword,
+    );
+    return await this.adminRepository.save(admin);
   }
 
   async create(createAdminDto: CreateAdminDto): Promise<Admin> {

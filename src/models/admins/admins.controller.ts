@@ -7,8 +7,10 @@ import {
   HttpStatus,
   UseGuards,
   Req,
+  Put,
 } from '@nestjs/common';
 import { UserRoles } from 'src/common/decorators/user-roles.decorator';
+import { ChangePasswordDto } from 'src/common/dto/change-password.dto';
 import { UserRole } from 'src/common/enums/user-role.enum';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { RolesGuard } from 'src/guards/roles.guard';
@@ -26,6 +28,18 @@ export class AdminsController {
     return res.status(HttpStatus.OK).json({
       data: { ...result },
       message: 'Đăng nhập thành công',
+    });
+  }
+
+  @Put('/change-password')
+  async changePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Res() res,
+    @Req() req,
+  ) {
+    await this.adminsService.changePassword(req.userId, changePasswordDto);
+    return res.status(HttpStatus.OK).json({
+      message: 'Cập nhật mật khẩu thành công',
     });
   }
 
