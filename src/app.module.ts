@@ -15,7 +15,7 @@ import { AuthenticationModule } from './models/authentication/authentication.mod
 import { AdminsModule } from './models/admins/admins.module';
 import { ConfigurationsModule } from './models/configurations/configurations.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FloorsModule } from './models/floors/floors.module';
 import { HistoriesModule } from './models/histories/histories.module';
 import { NotificationsModule } from './models/notifications/notifications.module';
@@ -35,17 +35,21 @@ import { NotificationsModule } from './models/notifications/notifications.module
     AuthenticationModule,
     AdminsModule,
     ConfigurationsModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      // host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT),
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      autoLoadEntities: true,
-    }),
     ConfigModule.forRoot({
       envFilePath: ['.env.development', '.env.production'],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'mysql',
+        // host: process.env.DATABASE_HOST,
+        port: parseInt(configService.get<string>('DATABASE_PORT')),
+        username: configService.get<string>('DATABASE_USERNAME'),
+        password: configService.get<string>('DATABASE_PASSWORD'),
+        database: configService.get<string>('DATABASE_NAME'),
+        autoLoadEntities: true,
+      }),
+      inject: [ConfigService],
     }),
     FloorsModule,
     HistoriesModule,
