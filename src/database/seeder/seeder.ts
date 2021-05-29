@@ -16,15 +16,15 @@ export class Seeder {
     private readonly facilitySeederService: FacilitySeederService,
   ) {}
   async seed() {
-    // await this.buildings()
-    //   .then((completed) => {
-    //     this.logger.debug('Successfuly completed seeding buildings...');
-    //     Promise.resolve(completed);
-    //   })
-    //   .catch((error) => {
-    //     this.logger.error('Failed seeding buildings...');
-    //     Promise.reject(error);
-    //   });
+    await this.buildings()
+      .then((completed) => {
+        this.logger.debug('Successfuly completed seeding buildings...');
+        Promise.resolve(completed);
+      })
+      .catch((error) => {
+        this.logger.error('Failed seeding buildings...');
+        Promise.reject(error);
+      });
     // await this.floors()
     //   .then((completed) => {
     //     this.logger.debug('Successfuly completed seeding buildings...');
@@ -43,15 +43,15 @@ export class Seeder {
     //     this.logger.error('Failed seeding rooms...');
     //     Promise.reject(error);
     //   });
-    // await this.facilityTypes()
-    //   .then((completed) => {
-    //     this.logger.debug('Successfuly completed seeding facility types...');
-    //     Promise.resolve(completed);
-    //   })
-    //   .catch((error) => {
-    //     this.logger.error('Failed seeding facility types...');
-    //     Promise.reject(error);
-    //   });
+    await this.facilityTypes()
+      .then((completed) => {
+        this.logger.debug('Successfuly completed seeding facility types...');
+        Promise.resolve(completed);
+      })
+      .catch((error) => {
+        this.logger.error('Failed seeding facility types...');
+        Promise.reject(error);
+      });
     await this.facilities()
       .then((completed) => {
         this.logger.debug('Successfuly completed seeding facilities...');
