@@ -38,10 +38,10 @@ import { NotificationsModule } from './models/notifications/notifications.module
     TypeOrmModule.forRoot({
       type: 'mysql',
       // host: process.env.DATABASE_HOST,
-      port: 3310,
-      username: 'root',
-      password: 'Hoidelamgi',
-      database: 'facility-management-api-development',
+      port: parseInt(process.env.DATABASE_PORT),
+      username: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
       autoLoadEntities: true,
     }),
     ConfigModule.forRoot({
