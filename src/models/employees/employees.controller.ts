@@ -30,8 +30,9 @@ export class EmployeesController {
 
   @Post('/login')
   async login(@Body() loginEmployeeDto: LoginEmployeeDto, @Res() res) {
-    await this.employeesService.login(loginEmployeeDto);
+    const result = await this.employeesService.login(loginEmployeeDto);
     return res.status(HttpStatus.OK).json({
+      data: {...result},
       message: 'Đăng nhập thành công',
     });
   }

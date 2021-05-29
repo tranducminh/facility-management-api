@@ -85,11 +85,15 @@ export class RequestsService {
     }
   }
 
-  async findAll(status?: RequestStatus) {
+  async findAll(limit_?: number, offset_?: number, status?: RequestStatus) {
     try {
-      if (!status)
-        return await this.requestRepository.find({
+      const limit = limit_ || 20;
+      const offset = offset_ || 1;
+      if (!status) {
+        const [requests, count] = await this.requestRepository.findAndCount({
           where: { isActive: true },
+          skip: (offset - 1) * limit,
+          take: limit,
           relations: [
             'employee',
             'employee.room',
@@ -104,8 +108,15 @@ export class RequestsService {
             'replacements',
           ],
         });
-      return await this.requestRepository.find({
+        return {
+          requests,
+          totalPage: Math.ceil(count / limit),
+        };
+      }
+      const [requests, count] = await this.requestRepository.findAndCount({
         where: { status, isActive: true },
+        skip: (offset - 1) * limit,
+        take: limit,
         relations: [
           'employee',
           'employee.room',
@@ -120,6 +131,10 @@ export class RequestsService {
           'replacements',
         ],
       });
+      return {
+        requests,
+        totalPage: Math.ceil(count / limit),
+      };
     } catch (error) {
       console.log(error);
       catchError(error);

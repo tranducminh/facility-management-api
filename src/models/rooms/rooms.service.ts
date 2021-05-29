@@ -28,6 +28,13 @@ export class RoomsService {
 
   async create(createRoomDto: CreateRoomDto) {
     try {
+      const existRoom = await this.roomRepository.findOne({
+        name: createRoomDto.name,
+        floor: { id: createRoomDto.floorId },
+      });
+      if (existRoom) {
+        throw new BadRequestException('Tên phòng đã tồn tại');
+      }
       const floor = await this.floorRepository.findOne(createRoomDto.floorId, {
         where: { isActive: true },
       });

@@ -22,6 +22,8 @@ import { RolesGuard } from 'src/guards/roles.guard';
 import { UserRoles } from 'src/common/decorators/user-roles.decorator';
 import { UserRole } from 'src/common/enums/user-role.enum';
 import { ChangePasswordDto } from 'src/common/dto/change-password.dto';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { FilterRepairmanDto } from './dto/filter-repairman.dto';
 
 @Controller('repairman')
 export class RepairmanController {
@@ -61,9 +63,13 @@ export class RepairmanController {
   @Get()
   @UserRoles(UserRole.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
-  async findAll(@Res() res, @Query('specialize') specialize?: string) {
+  async findAll(@Res() res, @Query() params?: FilterRepairmanDto) {
     return res.status(HttpStatus.OK).json({
-      repairman: await this.repairmanService.findAll(specialize),
+      ...(await this.repairmanService.findAll(
+        params.limit,
+        params.offset,
+        params.specialize,
+      )),
     });
   }
 

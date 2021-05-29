@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
+  Res,
+  HttpStatus,
 } from '@nestjs/common';
 import { RoomFacilitiesService } from './room-facilities.service';
 import { CreateRoomFacilityDto } from './dto/create-room-facility.dto';
@@ -23,8 +25,16 @@ export class RoomFacilitiesController {
   constructor(private readonly roomFacilitiesService: RoomFacilitiesService) {}
 
   @Post()
-  create(@Body() createRoomFacilityDto: CreateRoomFacilityDto) {
-    return this.roomFacilitiesService.create(createRoomFacilityDto);
+  async create(
+    @Body() createRoomFacilityDto: CreateRoomFacilityDto,
+    @Res() res,
+  ) {
+    return res.status(HttpStatus.OK).json({
+      roomFacility: await this.roomFacilitiesService.create(
+        createRoomFacilityDto,
+      ),
+      message: 'Tạo nút mạng thành công',
+    });
   }
 
   @Get()
@@ -46,7 +56,10 @@ export class RoomFacilitiesController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.roomFacilitiesService.remove(+id);
+  async remove(@Param('id') id: string, @Res() res) {
+    await this.roomFacilitiesService.remove(+id);
+    return res.status(HttpStatus.OK).json({
+      message: 'Xóa nút mạng thành công',
+    });
   }
 }

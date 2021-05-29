@@ -9,8 +9,8 @@ import { Room } from '../rooms/entities/room.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { Facility } from '../facilities/entities/facility.entity';
 import { Request } from '../requests/entities/request.entity';
-import { History } from '../histories/entities/history.entity';
 import { Replacement } from '../replacements/entities/replacement.entity';
+import { Repairman } from '../repairman/entities/repairman.entity';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { Replacement } from '../replacements/entities/replacement.entity';
       Facility,
       Request,
       Replacement,
-      History,
+      Repairman,
     ]),
     NotificationsModule,
   ],

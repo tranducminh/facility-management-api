@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -21,9 +22,9 @@ import { UserRole } from 'src/common/enums/user-role.enum';
 import { Facility } from '../facilities/entities/facility.entity';
 import { Request } from '../requests/entities/request.entity';
 import { Replacement } from '../replacements/entities/replacement.entity';
-import { History } from '../histories/entities/history.entity';
 import { FacilityStatus } from 'src/common/enums/facility-status.enum';
 import { ChangePasswordDto } from 'src/common/dto/change-password.dto';
+import { Repairman } from '../repairman/entities/repairman.entity';
 
 @Injectable()
 export class EmployeesService {
@@ -39,13 +40,24 @@ export class EmployeesService {
     private readonly requestRepository: Repository<Request>,
     @InjectRepository(Replacement)
     private readonly replacementRepository: Repository<Replacement>,
-    @InjectRepository(History)
-    private readonly historyRepository: Repository<History>,
+    @InjectRepository(Repairman)
+    private readonly repairmanRepository: Repository<Repairman>,
     private readonly notificationsService: NotificationsService,
   ) {}
 
   async create(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
     try {
+      const existEmployee = await this.employeeRepository.findOne({
+        identity: createEmployeeDto.identity,
+        isActive: true,
+      });
+      const existRepairman = await this.repairmanRepository.findOne({
+        identity: createEmployeeDto.identity,
+        isActive: true,
+      });
+      if (existRepairman || existEmployee) {
+        throw new BadRequestException('Mã nhân viên đã tồn tại');
+      }
       const hashPassword = await this.authenticationService.generateHashPassword(
         createEmployeeDto.identity,
       );
@@ -84,7 +96,9 @@ export class EmployeesService {
     try {
       const limit = limit_ || 20;
       const offset = offset_ || 1;
-      const totalCount = await this.employeeRepository.count();
+      const totalCount = await this.employeeRepository.count({
+        isActive: true,
+      });
       if (!hasRoom) {
         return {
           employees: await this.employeeRepository.find({
@@ -101,6 +115,7 @@ export class EmployeesService {
               'avatar',
               'phone',
               'hasRoom',
+              'isActive',
             ],
             relations: [
               'room',
@@ -205,6 +220,18 @@ export class EmployeesService {
     updateEmployeeAdminDto: UpdateEmployeeAdminDto,
   ) {
     try {
+      const existEmployee = await this.employeeRepository.findOne({
+        identity: updateEmployeeAdminDto.identity,
+        isActive: true,
+      });
+      const existRepairman = await this.repairmanRepository.findOne({
+        identity: updateEmployeeAdminDto.identity,
+        isActive: true,
+      });
+
+      if (existRepairman || (existEmployee && existEmployee.id !== id)) {
+        throw new BadRequestException('Mã nhân viên đã tồn tại');
+      }
       const employee = await this.employeeRepository.findOne(id, {
         where: { isActive: true },
       });

@@ -15,7 +15,6 @@ import { RequestsService } from './requests.service';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { RequestStatus } from 'src/common/enums/request-status.enum';
 import { ApproveRequestDto } from './dto/approve-request.dto';
 import { CompleteRequestDto } from './dto/complete-request.dto';
 import { UnCompleteRequestDto } from './dto/uncomplete-request.dto';
@@ -23,6 +22,7 @@ import { RejectRequestDto } from './dto/reject-request.dto';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { UserRoles } from 'src/common/decorators/user-roles.decorator';
 import { UserRole } from 'src/common/enums/user-role.enum';
+import { FilterRequestDto } from './dto/filter-request.dto';
 
 @Controller('requests')
 @UseGuards(AuthGuard, RolesGuard)
@@ -44,9 +44,13 @@ export class RequestsController {
 
   @Get()
   @UserRoles(UserRole.ADMIN)
-  async findAll(@Res() res, @Query('status') status?: RequestStatus) {
+  async findAll(@Res() res, @Query() params?: FilterRequestDto) {
     return res.status(HttpStatus.OK).json({
-      requests: await this.requestsService.findAll(status),
+      ...(await this.requestsService.findAll(
+        params.limit,
+        params.offset,
+        params.status,
+      )),
     });
   }
 

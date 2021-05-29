@@ -10,6 +10,7 @@ import { FacilityType } from '../facility-types/entities/facility-type.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthenticationModule } from '../authentication/authentication.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { Employee } from '../employees/entities/employee.entity';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
       FacilityType,
       History,
       Request,
+      Employee,
     ]),
     JwtModule.register({ secret: process.env.JWT_SECRET_KEY }),
     NotificationsModule,

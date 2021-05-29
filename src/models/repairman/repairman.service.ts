@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -12,6 +13,7 @@ import { catchError } from 'src/common/helpers/catch-error';
 import { uploadFileBase64 } from 'src/common/helpers/upload-file';
 import { Repository } from 'typeorm';
 import { AuthenticationService } from '../authentication/authentication.service';
+import { Employee } from '../employees/entities/employee.entity';
 import { FacilityType } from '../facility-types/entities/facility-type.entity';
 import { History } from '../histories/entities/history.entity';
 import { NotificationsService } from '../notifications/notifications.service';
@@ -29,6 +31,8 @@ export class RepairmanService {
     private readonly authenticationService: AuthenticationService,
     @InjectRepository(Repairman)
     private readonly repairmanRepository: Repository<Repairman>,
+    @InjectRepository(Employee)
+    private readonly employeeRepository: Repository<Employee>,
     @InjectRepository(FacilityType)
     private readonly facilityTypeRepository: Repository<FacilityType>,
     @InjectRepository(Specialize)
@@ -42,6 +46,17 @@ export class RepairmanService {
 
   async create(createRepairmanDto: CreateRepairmanDto) {
     try {
+      const existEmployee = await this.employeeRepository.findOne({
+        identity: createRepairmanDto.identity,
+        isActive: true,
+      });
+      const existRepairman = await this.repairmanRepository.findOne({
+        identity: createRepairmanDto.identity,
+        isActive: true,
+      });
+      if (existRepairman || existEmployee) {
+        throw new BadRequestException('Mã nhân viên đã tồn tại');
+      }
       const hashPassword = await this.authenticationService.generateHashPassword(
         createRepairmanDto.identity,
       );
@@ -78,15 +93,27 @@ export class RepairmanService {
     }
   }
 
-  async findAll(specialize?: string) {
+  async findAll(
+    limit_?: number,
+    offset_?: number,
+    specialize?: string,
+  ): Promise<{ repairman: Repairman[]; totalPage: number }> {
     try {
+      const limit = limit_ || 20;
+      const offset = offset_ || 1;
       if (!specialize) {
-        return await this.repairmanRepository.find({
+        const [repairman, count] = await this.repairmanRepository.findAndCount({
           where: { isActive: true },
+          skip: (offset - 1) * limit,
+          take: limit,
           relations: ['specializes', 'specializes.facilityType'],
         });
+        return {
+          repairman,
+          totalPage: Math.ceil(count / limit),
+        };
       }
-      return await this.repairmanRepository
+      const [repairman, count] = await this.repairmanRepository
         .createQueryBuilder('repairman')
         .leftJoinAndSelect('repairman.specializes', 's')
         .leftJoinAndSelect('s.facilityType', 'ft')
@@ -94,9 +121,15 @@ export class RepairmanService {
         .andWhere('repairman.isActive = true')
         .leftJoinAndSelect('repairman.specializes', 'specialize')
         .leftJoinAndSelect('specialize.facilityType', 'facilityType')
+        .skip((offset - 1) * limit)
+        .limit(limit)
         .orderBy('repairman.created_at', 'DESC')
         .setParameters({ specialize })
-        .getMany();
+        .getManyAndCount();
+      return {
+        repairman,
+        totalPage: Math.ceil(count / limit),
+      };
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -168,7 +201,7 @@ export class RepairmanService {
         .where('repairman.id = :id')
         .andWhere('repairman.isActive = true')
         .setParameters({ id })
-        .getMany();
+        .getOne();
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -194,7 +227,7 @@ export class RepairmanService {
         .where('repairman.id = :id')
         .andWhere('repairman.isActive = true')
         .setParameters({ id })
-        .getMany();
+        .getOne();
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -290,6 +323,17 @@ export class RepairmanService {
     updateRepairmanAdminDto: UpdateRepairmanAdminDto,
   ) {
     try {
+      const existEmployee = await this.employeeRepository.findOne({
+        identity: updateRepairmanAdminDto.identity,
+        isActive: true,
+      });
+      const existRepairman = await this.repairmanRepository.findOne({
+        identity: updateRepairmanAdminDto.identity,
+        isActive: true,
+      });
+      if (existRepairman || existEmployee) {
+        throw new BadRequestException('Mã nhân viên đã tồn tại');
+      }
       const { specializes, ...data } = updateRepairmanAdminDto;
       const repairman = await this.repairmanRepository.findOne(id);
       if (!repairman) {

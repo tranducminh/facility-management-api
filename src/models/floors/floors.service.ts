@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BooleanStatus } from 'src/common/enums/boolean-status.enum';
 import { catchError } from 'src/common/helpers/catch-error';
@@ -25,6 +25,13 @@ export class FloorsService {
     private readonly roomFacilityRepository: Repository<RoomFacility>,
   ) {}
   async create(createFloorDto: CreateFloorDto) {
+    const existFloor = await this.floorRepository.findOne({
+      name: createFloorDto.name,
+      building: { id: createFloorDto.buildingId },
+    });
+    if (existFloor) {
+      throw new BadRequestException('Tên tầng đã tồn tại');
+    }
     const building = await this.buildingRepository.findOne(
       createFloorDto.buildingId,
     );

@@ -30,6 +30,12 @@ export class BuildingsService {
 
   async create(createBuildingDto: CreateBuildingDto): Promise<Building> {
     try {
+      const existBuilding = await this.buildingRepository.findOne({
+        name: createBuildingDto.name,
+      });
+      if (existBuilding) {
+        throw new BadRequestException('Tên tòa nhà đã tồn tại');
+      }
       const newBuilding = this.buildingRepository.create(createBuildingDto);
       const saveBuilding = await this.buildingRepository.save(newBuilding);
       if (!saveBuilding) {
