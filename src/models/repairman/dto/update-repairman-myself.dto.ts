@@ -43,7 +43,7 @@ class Specialize {
 
   @IsBoolean()
   @IsNotEmpty()
-  isActive: boolean;
+  active: boolean;
 
   @IsNotEmpty()
   @IsString()

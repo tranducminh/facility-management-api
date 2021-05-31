@@ -62,7 +62,6 @@ export async function uploadFileBase64(file: string): Promise<string> {
       ContentEncoding: 'base64',
     };
     const data = await s3.upload(params).promise();
-    console.log(data.Location);
     return data.Location;
   } catch (error) {
     console.log(error);

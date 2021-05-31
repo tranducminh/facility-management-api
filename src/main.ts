@@ -8,7 +8,7 @@ import { json, urlencoded } from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: process.env.ALLOWED_DOMAINS.split(','),
     credentials: true,
   });
   app.useGlobalFilters(new AllExceptionsFilter());

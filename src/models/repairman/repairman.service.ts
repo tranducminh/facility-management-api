@@ -293,7 +293,7 @@ export class RepairmanService {
       const { specializes, ...data } = updateRepairmanMyselfDto;
       specializes.forEach((specialize) => {
         this.specializeRepository.update(specialize.id, {
-          isActive: specialize.isActive,
+          active: specialize.active,
           description: specialize.description,
         });
       });
@@ -301,10 +301,14 @@ export class RepairmanService {
         const avatar = await uploadFileBase64(
           updateRepairmanMyselfDto.avatar || '',
         );
-        return await this.repairmanRepository.update(id, {
+        console.log(111, avatar);
+        await this.repairmanRepository.update(id, {
           ...data,
           avatar,
         });
+        const repairman = await this.repairmanRepository.findOne(id);
+        console.log(repairman);
+        return repairman;
       }
       const { dateOfBirth, email, phone } = updateRepairmanMyselfDto;
       return await this.repairmanRepository.update(id, {
