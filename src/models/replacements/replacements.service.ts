@@ -5,7 +5,6 @@ import { Repository } from 'typeorm';
 import { Facility } from '../facilities/entities/facility.entity';
 import { Request } from '../requests/entities/request.entity';
 import { CreateReplacementDto } from './dto/create-replacement.dto';
-import { UpdateReplacementDto } from './dto/update-replacement.dto';
 import { Replacement } from './entities/replacement.entity';
 
 @Injectable()
@@ -34,21 +33,5 @@ export class ReplacementsService {
       console.log(error);
       catchError(error);
     }
-  }
-
-  findAll() {
-    return `This action returns all replacements`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} replacement`;
-  }
-
-  update(id: number, updateReplacementDto: UpdateReplacementDto) {
-    return `This action updates a #${id} replacement`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} replacement`;
   }
 }

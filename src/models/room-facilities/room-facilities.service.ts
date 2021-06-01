@@ -7,7 +7,6 @@ import { Repository } from 'typeorm';
 import { FacilityType } from '../facility-types/entities/facility-type.entity';
 import { Room } from '../rooms/entities/room.entity';
 import { CreateRoomFacilityDto } from './dto/create-room-facility.dto';
-import { UpdateRoomFacilityDto } from './dto/update-room-facility.dto';
 import { RoomFacility } from './entities/room-facility.entity';
 
 @Injectable()
@@ -43,18 +42,6 @@ export class RoomFacilitiesService {
       console.log(error);
       catchError(error);
     }
-  }
-
-  findAll() {
-    return `This action returns all roomFacilities`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} roomFacility`;
-  }
-
-  update(id: number, updateRoomFacilityDto: UpdateRoomFacilityDto) {
-    return `This action updates a #${id} roomFacility`;
   }
 
   async remove(id: number) {
