@@ -5,10 +5,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BooleanStatus } from 'src/common/enums/boolean-status.enum';
+import { NotificationType } from 'src/common/enums/notification-type.enum';
 import { catchError } from 'src/common/helpers/catch-error';
 import { Repository } from 'typeorm';
 import { Employee } from '../employees/entities/employee.entity';
 import { Floor } from '../floors/entities/floor.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 import { RoomFacility } from '../room-facilities/entities/room-facility.entity';
 import { Room } from '../rooms/entities/room.entity';
 import { CreateBuildingDto } from './dto/create-building.dto';
@@ -26,6 +28,7 @@ export class BuildingsService {
     private readonly employeeRepository: Repository<Employee>,
     @InjectRepository(RoomFacility)
     private readonly roomFacilityRepository: Repository<RoomFacility>,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async create(createBuildingDto: CreateBuildingDto): Promise<Building> {
@@ -245,23 +248,28 @@ export class BuildingsService {
       }
 
       building.floors.forEach((floor) => {
-        this.floorRepository.update(floor.id, { isActive: false });
+        floor.isActive = false;
+        this.floorRepository.save(floor);
         floor.rooms.forEach((room) => {
           room.employees.forEach((employee) => {
-            this.employeeRepository.update(employee.id, {
-              room: null,
-              hasRoom: BooleanStatus.FALSE,
+            employee.room = null;
+            employee.hasRoom = BooleanStatus.FALSE;
+            this.employeeRepository.save(employee);
+            this.notificationsService.create({
+              receiver: employee,
+              type: NotificationType.PENDING_ROOM,
             });
           });
           room.roomFacilities.forEach((roomFacility) => {
-            this.roomFacilityRepository.update(roomFacility.id, {
-              isActive: false,
-            });
+            roomFacility.isActive = false;
+            this.roomFacilityRepository.save(roomFacility);
           });
-          this.roomRepository.update(room.id, { isActive: false });
+          room.isActive = false;
+          this.roomRepository.save(room);
         });
       });
-      await this.buildingRepository.update(id, { isActive: false });
+      building.isActive = false;
+      await this.buildingRepository.save(building);
     } catch (error) {
       console.log(error);
       catchError(error);

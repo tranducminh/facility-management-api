@@ -344,11 +344,10 @@ export class EmployeesService {
     if (!isAuth) {
       throw new UnauthorizedException('Mật khẩu hiện tại không chính xác');
     }
-    return await this.employeeRepository.update(id, {
-      hashPassword: await this.authenticationService.generateHashPassword(
-        newPassword,
-      ),
-    });
+    employee.hashPassword = await this.authenticationService.generateHashPassword(
+      newPassword,
+    );
+    return await this.employeeRepository.save(employee);
   }
 
   async findMe(id: number) {

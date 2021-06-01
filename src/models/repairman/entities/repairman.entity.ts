@@ -4,6 +4,8 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Matches,
+  ValidateIf,
 } from 'class-validator';
 import { History } from 'src/models/histories/entities/history.entity';
 import { Request } from 'src/models/requests/entities/request.entity';
@@ -41,7 +43,9 @@ export class Repairman {
   unit: string;
 
   @Column({ nullable: true })
+  @ValidateIf((o) => o.email !== '')
   @IsOptional()
+  @Matches(/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/)
   @IsString()
   phone?: string;
 
@@ -49,6 +53,7 @@ export class Repairman {
   dateOfBirth?: Date;
 
   @Column({ nullable: true })
+  @ValidateIf((o) => o.email !== '')
   @IsEmail()
   @IsString()
   email?: string;

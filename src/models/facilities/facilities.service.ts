@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FacilityStatus } from 'src/common/enums/facility-status.enum';
 import { NotificationType } from 'src/common/enums/notification-type.enum';
 import { RequestStatus } from 'src/common/enums/request-status.enum';
 import { catchError } from 'src/common/helpers/catch-error';
@@ -362,10 +363,9 @@ export class FacilitiesService {
         facility,
         type: NotificationType.NEW_FACILITY_OWNER,
       });
-      return await this.facilityRepository.update(facilityId, {
-        employee,
-        handoveredDate: new Date(),
-      });
+      facility.employee = employee;
+      facility.handoveredDate = new Date();
+      return await this.facilityRepository.save(facility);
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -376,7 +376,7 @@ export class FacilitiesService {
     try {
       const facility = await this.facilityRepository.findOne(facilityId, {
         where: { isActive: true },
-        relations: ['employee'],
+        relations: ['employee', 'requests'],
       });
       if (!facility) {
         throw new NotFoundException('Không tìm thấy thiết bị');
@@ -386,10 +386,17 @@ export class FacilitiesService {
         facility,
         type: NotificationType.REMOVED_FACILITY_OWNER,
       });
-      return await this.facilityRepository.update(facilityId, {
-        employee: null,
-        handoveredDate: null,
+      facility.requests.forEach((request) => {
+        if (request.isActive) {
+          request.isActive = false;
+          request.repairman = null;
+          this.requestRepository.save(request);
+        }
       });
+      facility.employee = null;
+      facility.handoveredDate = null;
+      facility.status = FacilityStatus.READY;
+      return await this.facilityRepository.save(facility);
     } catch (error) {
       console.log(error);
       catchError(error);

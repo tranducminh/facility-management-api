@@ -5,19 +5,17 @@ import {
   IsNotEmpty,
   IsString,
   Matches,
+  ValidateIf,
 } from 'class-validator';
 import { BooleanStatus } from 'src/common/enums/boolean-status.enum';
-import { CommonStatus } from 'src/common/enums/common-status.enum';
 import { Facility } from 'src/models/facilities/entities/facility.entity';
 import { Request } from 'src/models/requests/entities/request.entity';
 import { Room } from 'src/models/rooms/entities/room.entity';
-import { Notification } from 'src/models/notifications/entities/notification.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
-  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -48,6 +46,7 @@ export class Employee {
   unit: string;
 
   @Column({ nullable: true })
+  @ValidateIf((o) => o.email !== '')
   @IsEmail()
   @IsString()
   email?: string;
@@ -57,6 +56,7 @@ export class Employee {
   avatar?: string;
 
   @Column({ nullable: true })
+  @ValidateIf((o) => o.phone !== '')
   @IsString()
   @Matches(/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/)
   phone?: string;

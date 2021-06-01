@@ -1,10 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BooleanStatus } from 'src/common/enums/boolean-status.enum';
+import { NotificationType } from 'src/common/enums/notification-type.enum';
 import { catchError } from 'src/common/helpers/catch-error';
 import { Repository } from 'typeorm';
 import { Building } from '../buildings/entities/building.entity';
 import { Employee } from '../employees/entities/employee.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 import { RoomFacility } from '../room-facilities/entities/room-facility.entity';
 import { Room } from '../rooms/entities/room.entity';
 import { CreateFloorDto } from './dto/create-floor.dto';
@@ -23,6 +25,7 @@ export class FloorsService {
     private readonly employeeRepository: Repository<Employee>,
     @InjectRepository(RoomFacility)
     private readonly roomFacilityRepository: Repository<RoomFacility>,
+    private readonly notificationsService: NotificationsService,
   ) {}
   async create(createFloorDto: CreateFloorDto) {
     const existFloor = await this.floorRepository.findOne({
@@ -49,22 +52,24 @@ export class FloorsService {
       });
       floor.rooms.forEach((room) => {
         room.employees.forEach((employee) => {
-          this.employeeRepository.update(employee.id, {
-            room: null,
-            hasRoom: BooleanStatus.FALSE,
+          employee.room = null;
+          employee.hasRoom = BooleanStatus.FALSE;
+          this.employeeRepository.save(employee);
+          this.notificationsService.create({
+            receiver: employee,
+            type: NotificationType.PENDING_ROOM,
           });
         });
         room.roomFacilities.forEach((roomFacility) => {
-          this.roomFacilityRepository.update(roomFacility.id, {
-            isActive: false,
-          });
+          roomFacility.isActive = false;
+          this.roomFacilityRepository.save(roomFacility);
         });
-        this.roomRepository.update(room.id, { isActive: false });
+        room.isActive = false;
+        this.roomRepository.save(room);
       });
-      await this.floorRepository.update(floor.id, {
-        isActive: false,
-        building: null,
-      });
+      floor.isActive = false;
+      floor.building = null;
+      await this.floorRepository.save(floor);
     } catch (error) {
       console.log(error);
       catchError(error);

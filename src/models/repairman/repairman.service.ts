@@ -201,6 +201,7 @@ export class RepairmanService {
         .where('repairman.id = :id')
         .andWhere('repairman.isActive = true')
         .setParameters({ id })
+        .orderBy('request.updated_at', 'DESC')
         .getOne();
     } catch (error) {
       console.log(error);
@@ -227,6 +228,7 @@ export class RepairmanService {
         .where('repairman.id = :id')
         .andWhere('repairman.isActive = true')
         .setParameters({ id })
+        .orderBy('history.created_at', 'DESC')
         .getOne();
     } catch (error) {
       console.log(error);
@@ -278,11 +280,10 @@ export class RepairmanService {
     if (!isAuth) {
       throw new UnauthorizedException('Mật khẩu hiện tại không chính xác');
     }
-    return await this.repairmanRepository.update(id, {
-      hashPassword: await this.authenticationService.generateHashPassword(
-        newPassword,
-      ),
-    });
+    repairman.hashPassword = await this.authenticationService.generateHashPassword(
+      newPassword,
+    );
+    return await this.repairmanRepository.save(repairman);
   }
 
   async updateMyself(
@@ -301,13 +302,11 @@ export class RepairmanService {
         const avatar = await uploadFileBase64(
           updateRepairmanMyselfDto.avatar || '',
         );
-        console.log(111, avatar);
         await this.repairmanRepository.update(id, {
           ...data,
           avatar,
         });
         const repairman = await this.repairmanRepository.findOne(id);
-        console.log(repairman);
         return repairman;
       }
       const { dateOfBirth, email, phone } = updateRepairmanMyselfDto;
@@ -335,7 +334,7 @@ export class RepairmanService {
         identity: updateRepairmanAdminDto.identity,
         isActive: true,
       });
-      if (existRepairman || existEmployee) {
+      if ((existRepairman && existRepairman.id !== id) || existEmployee) {
         throw new BadRequestException('Mã nhân viên đã tồn tại');
       }
       const { specializes, ...data } = updateRepairmanAdminDto;

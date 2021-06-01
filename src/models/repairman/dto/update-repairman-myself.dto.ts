@@ -6,20 +6,23 @@ import {
   IsOptional,
   IsString,
   Matches,
+  ValidateIf,
 } from 'class-validator';
 
 export class UpdateRepairmanMyselfDto {
   @IsOptional()
   dateOfBirth?: Date;
 
+  @ValidateIf((o) => o.email !== '')
+  @IsOptional()
   @IsEmail()
   @IsString()
-  @IsOptional()
   email?: string;
 
+  @ValidateIf((o) => o.phone !== '')
+  @IsOptional()
   @IsString()
   @Matches(/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/)
-  @IsOptional()
   phone?: string;
 
   @IsOptional()
