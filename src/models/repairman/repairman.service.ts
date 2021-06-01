@@ -76,9 +76,9 @@ export class RepairmanService {
       const types = await this.facilityTypeRepository.find();
       for (let i = 0; i < types.length; i++) {
         const typeName = types[i].name;
-        const isActive = facilityTypes.includes(typeName);
+        const active = facilityTypes.includes(typeName);
         const newSpecialize = this.specializeRepository.create({
-          isActive,
+          active,
           repairman: saveRepairman,
           facilityType: await this.facilityTypeRepository.findOne({
             name: typeName,

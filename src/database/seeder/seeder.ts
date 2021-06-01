@@ -1,8 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { AdminSeederService } from './admin/admin.seeder.service';
 import { BuildingSeederService } from './building/building.seeder.service';
+import { EmployeeSeederService } from './employee/employee.seeder.service';
 import { FacilityTypeSeederService } from './facility-type/facility-type.seeder.service';
 import { FacilitySeederService } from './facility/facility.seeder.service';
 import { FloorSeederService } from './floor/floor.seeder.service';
+import { RepairmanSeederService } from './repairman/repairman.seeder.service';
 import { RoomSeederService } from './room/room.seeder.service';
 
 @Injectable()
@@ -14,6 +17,9 @@ export class Seeder {
     private readonly floorSeederService: FloorSeederService,
     private readonly facilityTypeSeederService: FacilityTypeSeederService,
     private readonly facilitySeederService: FacilitySeederService,
+    private readonly adminSeederService: AdminSeederService,
+    private readonly employeeSeederService: EmployeeSeederService,
+    private readonly repairmanSeederService: RepairmanSeederService,
   ) {}
   async seed() {
     await this.buildings()
@@ -59,6 +65,33 @@ export class Seeder {
       })
       .catch((error) => {
         this.logger.error('Failed seeding facilities...');
+        Promise.reject(error);
+      });
+    await this.admins()
+      .then((completed) => {
+        this.logger.debug('Successfuly completed seeding admins...');
+        Promise.resolve(completed);
+      })
+      .catch((error) => {
+        this.logger.error('Failed seeding admins...');
+        Promise.reject(error);
+      });
+    await this.employees()
+      .then((completed) => {
+        this.logger.debug('Successfuly completed seeding employees...');
+        Promise.resolve(completed);
+      })
+      .catch((error) => {
+        this.logger.error('Failed seeding employees...');
+        Promise.reject(error);
+      });
+    await this.repairman()
+      .then((completed) => {
+        this.logger.debug('Successfuly completed seeding repairman...');
+        Promise.resolve(completed);
+      })
+      .catch((error) => {
+        this.logger.error('Failed seeding repairman...');
         Promise.reject(error);
       });
   }
@@ -122,6 +155,45 @@ export class Seeder {
           'No. of facility created : ' +
             createdFacilities.filter(
               (nullValueOrCreatedFacility) => nullValueOrCreatedFacility,
+            ).length,
+        );
+        return Promise.resolve(true);
+      })
+      .catch((error) => Promise.reject(error));
+  }
+  async admins() {
+    return await Promise.all(await this.adminSeederService.create())
+      .then((createdAdmins) => {
+        this.logger.debug(
+          'No. of admin created : ' +
+            createdAdmins.filter(
+              (nullValueOrCreatedAdmin) => nullValueOrCreatedAdmin,
+            ).length,
+        );
+        return Promise.resolve(true);
+      })
+      .catch((error) => Promise.reject(error));
+  }
+  async employees() {
+    return await Promise.all(await this.employeeSeederService.create())
+      .then((createdEmployees) => {
+        this.logger.debug(
+          'No. of employee created : ' +
+            createdEmployees.filter(
+              (nullValueOrCreatedEmployee) => nullValueOrCreatedEmployee,
+            ).length,
+        );
+        return Promise.resolve(true);
+      })
+      .catch((error) => Promise.reject(error));
+  }
+  async repairman() {
+    return await Promise.all(await this.repairmanSeederService.create())
+      .then((createdRepairman) => {
+        this.logger.debug(
+          'No. of employee created : ' +
+            createdRepairman.filter(
+              (nullValueOrCreatedRepairman) => nullValueOrCreatedRepairman,
             ).length,
         );
         return Promise.resolve(true);

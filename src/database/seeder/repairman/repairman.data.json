@@ -1,0 +1,23 @@
+[
+  {
+    "identity": "17021067",
+    "name": "Nguyễn Tiến Toàn",
+    "unit": "Kỹ thuật",
+    "email": "17021067@hcma.edu.vn",
+    "specializes": [
+      "computer",
+      "printer"
+    ]
+  },
+  {
+    "identity": "17022412",
+    "name": "Nguyễn Ngọc Hải",
+    "unit": "Kỹ thuật",
+    "email": "17022412@hcma.edu.vn",
+    "specializes": [
+      "computer",
+      "printer",
+      "fax"
+    ]
+  }
+]

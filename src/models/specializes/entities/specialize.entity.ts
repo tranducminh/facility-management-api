@@ -16,7 +16,7 @@ export class Specialize {
   @IsNotEmpty()
   id: number;
 
-  @Column({ nullable: true, default: true })
+  @Column({ nullable: true, default: false })
   @IsNotEmpty()
   @IsBoolean()
   active?: boolean;

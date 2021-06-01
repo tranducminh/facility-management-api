@@ -4,10 +4,8 @@ import {
   BeforeUpdate,
   Column,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Notification } from 'src/models/notifications/entities/notification.entity';
 
 @Entity('admins')
 export class Admin {
@@ -52,14 +50,4 @@ export class Admin {
   private beforeUpdate() {
     this.updatedAt = new Date();
   }
-
-  // @OneToMany(() => Notification, (notification) => notification.receiver, {
-  //   cascade: true,
-  // })
-  // sentNotifications: Notification[];
-
-  // @OneToMany(() => Notification, (notification) => notification.sender, {
-  //   cascade: true,
-  // })
-  // notifications: Notification[];
 }
