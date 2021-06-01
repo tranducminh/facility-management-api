@@ -376,7 +376,7 @@ export class FacilitiesService {
     try {
       const facility = await this.facilityRepository.findOne(facilityId, {
         where: { isActive: true },
-        relations: ['employee', 'requests'],
+        relations: ['employee', 'requests', 'requests.repairman'],
       });
       if (!facility) {
         throw new NotFoundException('Không tìm thấy thiết bị');
@@ -389,7 +389,14 @@ export class FacilitiesService {
       facility.requests.forEach((request) => {
         if (request.isActive) {
           request.isActive = false;
-          request.repairman = null;
+          if (request.repairman?.id) {
+            this.notificationsService.create({
+              receiver: request.repairman,
+              request,
+              type: NotificationType.CANCELED_TASK,
+            });
+            request.repairman = null;
+          }
           this.requestRepository.save(request);
         }
       });

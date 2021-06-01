@@ -76,6 +76,8 @@ export class NotificationsService {
             ? `${sender.name} đã hoàn thành nhiệm vụ #${request.id}`
             : type === NotificationType.UNCOMPLETED_TASK
             ? `${sender.name} đã không thể hoàn thành nhiệm vụ #${request.id}`
+            : type === NotificationType.CANCELED_TASK
+            ? `Nhiệm vụ #${request.id} đã bị hủy bỏ`
             : type === NotificationType.NEW_ROOM
             ? `Bạn đã được thêm vào phòng ${room.floor.building.name}/${room.name}`
             : type === NotificationType.PENDING_ROOM
@@ -98,11 +100,11 @@ export class NotificationsService {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const Pusher = require('pusher');
         const pusher = new Pusher({
-          appId: '1061394',
-          key: '75ba4bf21a42e1773cf4',
-          secret: 'd3370d6d6f3ff59c6bcd',
-          cluster: 'ap1',
-          // encrypted: true,
+          appId: process.env.PUSHER_APP_ID,
+          key: process.env.PUSHER_KEY,
+          secret: process.env.PUSHER_SECRET,
+          cluster: process.env.PUSHER_CLUSTER,
+          useTLS: true,
         });
         await pusher.trigger(newNotification.receiverChannel, 'common', {
           notification: newNotification,
