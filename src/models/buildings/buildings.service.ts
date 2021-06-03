@@ -60,7 +60,7 @@ export class BuildingsService {
         .leftJoinAndSelect('room.employees', 'employee')
         .leftJoinAndSelect('employee.requests', 'request')
         .where('building.isActive = true')
-        .orderBy('building.name', 'ASC')
+        .orderBy('building.index', 'ASC')
         .getMany();
     } catch (error) {
       console.log(error);

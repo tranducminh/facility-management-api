@@ -80,6 +80,11 @@ export class Employee {
   @IsString()
   channel: string;
 
+  @Column({ nullable: false, name: 'first_name' })
+  @IsNotEmpty()
+  @IsString()
+  firstName: string;
+
   @Column({ nullable: false, name: 'is_active', default: true })
   @IsNotEmpty()
   @IsBoolean()
@@ -96,6 +101,7 @@ export class Employee {
     this.createdAt = new Date();
     this.updatedAt = new Date();
     this.channel = new Date().getTime().toString();
+    this.firstName = this.name.split(' ').pop();
     if (this.room) {
       this.hasRoom = BooleanStatus.TRUE;
     }
@@ -104,6 +110,7 @@ export class Employee {
   @BeforeUpdate()
   private beforeUpdate() {
     this.updatedAt = new Date();
+    this.firstName = this.name.split(' ').pop();
     if (this.room) {
       this.hasRoom = BooleanStatus.TRUE;
     } else {

@@ -88,14 +88,12 @@ export class EmployeesService {
     }
   }
 
-  async findAll(
-    limit_?: number,
-    offset_?: number,
+  async findAllWithLimit(
+    limit?: number,
+    offset?: number,
     hasRoom?: BooleanStatus,
   ): Promise<{ employees: Employee[]; totalPage: number }> {
     try {
-      const limit = limit_ || 20;
-      const offset = offset_ || 1;
       const totalCount = await this.employeeRepository.count({
         isActive: true,
       });
@@ -105,6 +103,7 @@ export class EmployeesService {
             where: { isActive: true },
             skip: (offset - 1) * limit,
             take: limit,
+            order: { firstName: 'ASC' },
             select: [
               'id',
               'identity',
@@ -116,6 +115,7 @@ export class EmployeesService {
               'phone',
               'hasRoom',
               'isActive',
+              'firstName',
             ],
             relations: [
               'room',
@@ -155,6 +155,64 @@ export class EmployeesService {
         }),
         totalPage: Math.ceil(totalCount / limit),
       };
+    } catch (error) {
+      console.log(error);
+      catchError(error);
+    }
+  }
+
+  async findAll(hasRoom: BooleanStatus): Promise<Employee[]> {
+    try {
+      if (!hasRoom) {
+        return await this.employeeRepository.find({
+          where: { isActive: true },
+          order: { firstName: 'ASC' },
+          select: [
+            'id',
+            'identity',
+            'name',
+            'dateOfBirth',
+            'unit',
+            'email',
+            'avatar',
+            'phone',
+            'hasRoom',
+            'isActive',
+            'firstName',
+          ],
+          relations: [
+            'room',
+            'room.floor',
+            'room.floor.building',
+            'facilities',
+            'facilities.facilityType',
+          ],
+        });
+      }
+      return await this.employeeRepository.find({
+        where: { hasRoom, isActive: true },
+        order: { firstName: 'ASC' },
+        select: [
+          'id',
+          'identity',
+          'name',
+          'dateOfBirth',
+          'unit',
+          'email',
+          'avatar',
+          'phone',
+          'hasRoom',
+          'isActive',
+          'firstName',
+        ],
+        relations: [
+          'room',
+          'room.floor',
+          'room.floor.building',
+          'facilities',
+          'facilities.facilityType',
+        ],
+      });
     } catch (error) {
       console.log(error);
       catchError(error);
@@ -430,9 +488,9 @@ export class EmployeesService {
       if (!employee) {
         throw new NotFoundException('Không tìm thấy tài khoản cần cập nhật');
       }
-      const updatedEmployee = await this.employeeRepository.save(
-        Object.assign(employee, { room }),
-      );
+      employee.room = room;
+      employee.hasRoom = BooleanStatus.TRUE;
+      const updatedEmployee = await this.employeeRepository.save(employee);
       this.notificationsService.create({
         receiver: employee,
         room,
@@ -453,9 +511,9 @@ export class EmployeesService {
       if (!employee) {
         throw new NotFoundException('Không tìm thấy tài khoản cần cập nhật');
       }
-      const updatedEmployee = await this.employeeRepository.save(
-        Object.assign(employee, { room: null }),
-      );
+      employee.room = null;
+      employee.hasRoom = BooleanStatus.FALSE;
+      const updatedEmployee = await this.employeeRepository.save(employee);
       this.notificationsService.create({
         receiver: employee,
         type: NotificationType.PENDING_ROOM,

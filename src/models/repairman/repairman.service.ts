@@ -94,13 +94,11 @@ export class RepairmanService {
   }
 
   async findAll(
-    limit_?: number,
-    offset_?: number,
+    limit?: number,
+    offset?: number,
     specialize?: string,
   ): Promise<{ repairman: Repairman[]; totalPage: number }> {
     try {
-      const limit = limit_ || 20;
-      const offset = offset_ || 1;
       if (!specialize) {
         const [repairman, count] = await this.repairmanRepository.findAndCount({
           where: { isActive: true },
@@ -115,12 +113,13 @@ export class RepairmanService {
       }
       const [repairman, count] = await this.repairmanRepository
         .createQueryBuilder('repairman')
-        .leftJoinAndSelect('repairman.specializes', 's')
-        .leftJoinAndSelect('s.facilityType', 'ft')
-        .where('ft.name = :specialize')
+        .leftJoin('repairman.specializes', 's')
+        .leftJoin('s.facilityType', 'ft')
+        .where('s.active = true')
+        .andWhere('ft.name = :specialize')
         .andWhere('repairman.isActive = true')
-        .leftJoinAndSelect('repairman.specializes', 'specialize')
-        .leftJoinAndSelect('specialize.facilityType', 'facilityType')
+        .leftJoinAndSelect('repairman.specializes', 's1')
+        .leftJoinAndSelect('s.facilityType', 'ft1')
         .skip((offset - 1) * limit)
         .limit(limit)
         .orderBy('repairman.created_at', 'DESC')

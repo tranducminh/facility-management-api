@@ -23,6 +23,7 @@ import { RolesGuard } from 'src/guards/roles.guard';
 import { UserRoles } from 'src/common/decorators/user-roles.decorator';
 import { UserRole } from 'src/common/enums/user-role.enum';
 import { ChangePasswordDto } from 'src/common/dto/change-password.dto';
+import { BooleanStatus } from 'src/common/enums/boolean-status.enum';
 
 @Controller('employees')
 export class EmployeesController {
@@ -63,14 +64,23 @@ export class EmployeesController {
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @UserRoles(UserRole.ADMIN)
-  async findAll(@Query() params: FilterEmployeeDto, @Res() res) {
-    const result = await this.employeesService.findAll(
+  async findAllWithLimit(@Query() params: FilterEmployeeDto, @Res() res) {
+    const result = await this.employeesService.findAllWithLimit(
       params.limit,
       params.offset,
       params.hasRoom,
     );
     return res.status(HttpStatus.OK).json({
       ...result,
+    });
+  }
+
+  @Get('/all')
+  @UseGuards(AuthGuard, RolesGuard)
+  @UserRoles(UserRole.ADMIN)
+  async findAll(@Query('hasRoom') hasRoom: BooleanStatus, @Res() res) {
+    return res.status(HttpStatus.OK).json({
+      employees: await this.employeesService.findAll(hasRoom),
     });
   }
 

@@ -81,6 +81,11 @@ export class Repairman {
   @IsBoolean()
   isActive: boolean;
 
+  @Column({ nullable: false, name: 'first_name' })
+  @IsNotEmpty()
+  @IsString()
+  firstName: string;
+
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;
 
@@ -91,12 +96,14 @@ export class Repairman {
   private beforeInsert() {
     this.createdAt = new Date();
     this.updatedAt = new Date();
+    this.firstName = this.name.split(' ').pop();
     this.channel = new Date().getTime().toString();
   }
 
   @BeforeUpdate()
   private beforeUpdate() {
     this.updatedAt = new Date();
+    this.firstName = this.name.split(' ').pop();
   }
 
   @OneToMany(() => Request, (request) => request.repairman, {

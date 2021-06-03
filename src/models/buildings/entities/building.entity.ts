@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Floor } from 'src/models/floors/entities/floor.entity';
 import { Room } from 'src/models/rooms/entities/room.entity';
 import {
@@ -26,6 +26,11 @@ export class Building {
   @IsBoolean()
   isActive: boolean;
 
+  @Column({ nullable: false })
+  @IsNotEmpty()
+  @IsNumber()
+  index: number;
+
   @Column({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt?: Date;
 
@@ -36,6 +41,7 @@ export class Building {
   private beforeInsert() {
     this.createdAt = new Date();
     this.updatedAt = new Date();
+    this.index = parseInt(this.name.substring(1));
   }
 
   @BeforeUpdate()
