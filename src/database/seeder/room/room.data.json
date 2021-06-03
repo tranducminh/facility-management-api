@@ -20,13 +20,163 @@
     "floorName": "2"
   },
   {
-    "name": "103",
+    "name": "301",
+    "buildingName": "A1",
+    "floorName": "3"
+  },
+  {
+    "name": "302",
+    "buildingName": "A1",
+    "floorName": "3"
+  },
+  {
+    "name": "101",
     "buildingName": "A2",
     "floorName": "1"
   },
   {
-    "name": "104",
+    "name": "102",
     "buildingName": "A2",
     "floorName": "1"
+  },
+  {
+    "name": "201",
+    "buildingName": "A2",
+    "floorName": "2"
+  },
+  {
+    "name": "202",
+    "buildingName": "A2",
+    "floorName": "2"
+  },
+  {
+    "name": "301",
+    "buildingName": "A2",
+    "floorName": "3"
+  },
+  {
+    "name": "302",
+    "buildingName": "A2",
+    "floorName": "3"
+  },
+  {
+    "name": "101",
+    "buildingName": "A3",
+    "floorName": "1"
+  },
+  {
+    "name": "102",
+    "buildingName": "A3",
+    "floorName": "1"
+  },
+  {
+    "name": "201",
+    "buildingName": "A3",
+    "floorName": "2"
+  },
+  {
+    "name": "202",
+    "buildingName": "A3",
+    "floorName": "2"
+  },
+  {
+    "name": "301",
+    "buildingName": "A3",
+    "floorName": "3"
+  },
+  {
+    "name": "302",
+    "buildingName": "A3",
+    "floorName": "3"
+  },
+  {
+    "name": "101",
+    "buildingName": "A4",
+    "floorName": "1"
+  },
+  {
+    "name": "102",
+    "buildingName": "A4",
+    "floorName": "1"
+  },
+  {
+    "name": "201",
+    "buildingName": "A4",
+    "floorName": "2"
+  },
+  {
+    "name": "202",
+    "buildingName": "A4",
+    "floorName": "2"
+  },
+  {
+    "name": "301",
+    "buildingName": "A4",
+    "floorName": "3"
+  },
+  {
+    "name": "302",
+    "buildingName": "A4",
+    "floorName": "3"
+  },
+  {
+    "name": "101",
+    "buildingName": "A5",
+    "floorName": "1"
+  },
+  {
+    "name": "102",
+    "buildingName": "A5",
+    "floorName": "1"
+  },
+  {
+    "name": "201",
+    "buildingName": "A5",
+    "floorName": "2"
+  },
+  {
+    "name": "202",
+    "buildingName": "A5",
+    "floorName": "2"
+  },
+  {
+    "name": "301",
+    "buildingName": "A5",
+    "floorName": "3"
+  },
+  {
+    "name": "302",
+    "buildingName": "A5",
+    "floorName": "3"
+  },
+  {
+    "name": "101",
+    "buildingName": "A6",
+    "floorName": "1"
+  },
+  {
+    "name": "102",
+    "buildingName": "A6",
+    "floorName": "1"
+  },
+  {
+    "name": "201",
+    "buildingName": "A6",
+    "floorName": "2"
+  },
+  {
+    "name": "202",
+    "buildingName": "A6",
+    "floorName": "2"
+  },
+  {
+    "name": "301",
+    "buildingName": "A6",
+    "floorName": "3"
+  },
+  {
+    "name": "302",
+    "buildingName": "A6",
+    "floorName": "3"
   }
 ]

@@ -12,10 +12,6 @@
     "buildingName": "A1"
   },
   {
-    "name": "4",
-    "buildingName": "A1"
-  },
-  {
     "name": "1",
     "buildingName": "A2"
   },
@@ -28,7 +24,75 @@
     "buildingName": "A2"
   },
   {
-    "name": "4",
-    "buildingName": "A2"
+    "name": "1",
+    "buildingName": "A3"
+  },
+  {
+    "name": "2",
+    "buildingName": "A3"
+  },
+  {
+    "name": "3",
+    "buildingName": "A3"
+  },
+  {
+    "name": "1",
+    "buildingName": "A4"
+  },
+  {
+    "name": "2",
+    "buildingName": "A4"
+  },
+  {
+    "name": "3",
+    "buildingName": "A4"
+  },
+  {
+    "name": "1",
+    "buildingName": "A5"
+  },
+  {
+    "name": "2",
+    "buildingName": "A5"
+  },
+  {
+    "name": "3",
+    "buildingName": "A5"
+  },
+  {
+    "name": "1",
+    "buildingName": "A6"
+  },
+  {
+    "name": "2",
+    "buildingName": "A6"
+  },
+  {
+    "name": "3",
+    "buildingName": "A6"
+  },
+  {
+    "name": "1",
+    "buildingName": "A7"
+  },
+  {
+    "name": "2",
+    "buildingName": "A7"
+  },
+  {
+    "name": "3",
+    "buildingName": "A7"
+  },
+  {
+    "name": "1",
+    "buildingName": "A8"
+  },
+  {
+    "name": "2",
+    "buildingName": "A8"
+  },
+  {
+    "name": "3",
+    "buildingName": "A8"
   }
 ]

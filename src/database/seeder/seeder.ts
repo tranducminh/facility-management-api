@@ -31,24 +31,24 @@ export class Seeder {
         this.logger.error('Failed seeding buildings...');
         Promise.reject(error);
       });
-    // await this.floors()
-    //   .then((completed) => {
-    //     this.logger.debug('Successfuly completed seeding buildings...');
-    //     Promise.resolve(completed);
-    //   })
-    //   .catch((error) => {
-    //     this.logger.error('Failed seeding buildings...');
-    //     Promise.reject(error);
-    //   });
-    // await this.rooms()
-    //   .then((completed) => {
-    //     this.logger.debug('Successfuly completed seeding rooms...');
-    //     Promise.resolve(completed);
-    //   })
-    //   .catch((error) => {
-    //     this.logger.error('Failed seeding rooms...');
-    //     Promise.reject(error);
-    //   });
+    await this.floors()
+      .then((completed) => {
+        this.logger.debug('Successfuly completed seeding buildings...');
+        Promise.resolve(completed);
+      })
+      .catch((error) => {
+        this.logger.error('Failed seeding buildings...');
+        Promise.reject(error);
+      });
+    await this.rooms()
+      .then((completed) => {
+        this.logger.debug('Successfuly completed seeding rooms...');
+        Promise.resolve(completed);
+      })
+      .catch((error) => {
+        this.logger.error('Failed seeding rooms...');
+        Promise.reject(error);
+      });
     await this.facilityTypes()
       .then((completed) => {
         this.logger.debug('Successfuly completed seeding facility types...');

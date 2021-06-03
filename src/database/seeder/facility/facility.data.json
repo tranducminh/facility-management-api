@@ -2,7 +2,7 @@
   {
     "facilityType": "computer",
     "name": "Dell vostro 3568",
-    "origin": "Viet nam",
+    "origin": "Việt Nam",
     "price": 18000000,
     "configuration": {
       "cpu": "CPU Intel Core i9-11900K (3.5GHz turbo up to 5.3Ghz, 8 nhân 16 luồng, 16MB Cache, 125W)",
@@ -22,10 +22,338 @@
     }
   },
   {
+    "facilityType": "computer",
+    "name": "Dell vostro 3568",
+    "origin": "Việt Nam",
+    "price": 18000000,
+    "configuration": {
+      "cpu": "CPU Intel Core i9-11900K (3.5GHz turbo up to 5.3Ghz, 8 nhân 16 luồng, 16MB Cache, 125W)",
+      "mainboard": "Mainboard Gigabyte B560M-AORUS ELITE",
+      "psu": "Nguồn Asus ROG Strix 850W Gold - 850W 80 Plus Gold Full Modular",
+      "ram": "Ram Desktop AVEXIR 2CORGB (AVD4UZ330001608G-2CORGB) 16GB (2x8GB) DDR4 3000Mhz",
+      "vga": "Card màn hình Asus GT1030-SL-2G-BRK (2GB GDDR5, 64-bit, DVI+HDMI",
+      "hardDrive": "Ổ cứng SSD Adata SX6000PNP 512GB M.2 2280 PCIe NVMe Gen 3x4 (Đọc 2100MB/s - Ghi 1400MB/s) - (ASX6000PNP-512GT-C)",
+      "opticalDrive": "",
+      "monitor": "Màn hình LG 29WP500-B",
+      "mouse": "Chuột E-Dra EM618 Đen",
+      "keyboard": "Bàn phím cơ Dareu EK87 White",
+      "headPhone": "Tai nghe Asus ROG Delta Gundam LTD",
+      "webcam": "Webcam Rapoo C200 HD 720p",
+      "cardReader": "USB 4.0",
+      "fanCase": "Fan Case Fan Vitra Snow RGB"
+    }
+  },
+  {
+    "facilityType": "computer",
+    "name": "Dell vostro 3568",
+    "origin": "Việt Nam",
+    "price": 18000000,
+    "configuration": {
+      "cpu": "CPU Intel Core i9-11900K (3.5GHz turbo up to 5.3Ghz, 8 nhân 16 luồng, 16MB Cache, 125W)",
+      "mainboard": "Mainboard Gigabyte B560M-AORUS ELITE",
+      "psu": "Nguồn Asus ROG Strix 850W Gold - 850W 80 Plus Gold Full Modular",
+      "ram": "Ram Desktop AVEXIR 2CORGB (AVD4UZ330001608G-2CORGB) 16GB (2x8GB) DDR4 3000Mhz",
+      "vga": "Card màn hình Asus GT1030-SL-2G-BRK (2GB GDDR5, 64-bit, DVI+HDMI",
+      "hardDrive": "Ổ cứng SSD Adata SX6000PNP 512GB M.2 2280 PCIe NVMe Gen 3x4 (Đọc 2100MB/s - Ghi 1400MB/s) - (ASX6000PNP-512GT-C)",
+      "opticalDrive": "",
+      "monitor": "Màn hình LG 29WP500-B",
+      "mouse": "Chuột E-Dra EM618 Đen",
+      "keyboard": "Bàn phím cơ Dareu EK87 White",
+      "headPhone": "Tai nghe Asus ROG Delta Gundam LTD",
+      "webcam": "Webcam Rapoo C200 HD 720p",
+      "cardReader": "USB 4.0",
+      "fanCase": "Fan Case Fan Vitra Snow RGB"
+    }
+  },
+  {
+    "facilityType": "computer",
+    "name": "Dell vostro 3568",
+    "origin": "Việt Nam",
+    "price": 18000000,
+    "configuration": {
+      "cpu": "CPU Intel Core i9-11900K (3.5GHz turbo up to 5.3Ghz, 8 nhân 16 luồng, 16MB Cache, 125W)",
+      "mainboard": "Mainboard Gigabyte B560M-AORUS ELITE",
+      "psu": "Nguồn Asus ROG Strix 850W Gold - 850W 80 Plus Gold Full Modular",
+      "ram": "Ram Desktop AVEXIR 2CORGB (AVD4UZ330001608G-2CORGB) 16GB (2x8GB) DDR4 3000Mhz",
+      "vga": "Card màn hình Asus GT1030-SL-2G-BRK (2GB GDDR5, 64-bit, DVI+HDMI",
+      "hardDrive": "Ổ cứng SSD Adata SX6000PNP 512GB M.2 2280 PCIe NVMe Gen 3x4 (Đọc 2100MB/s - Ghi 1400MB/s) - (ASX6000PNP-512GT-C)",
+      "opticalDrive": "",
+      "monitor": "Màn hình LG 29WP500-B",
+      "mouse": "Chuột E-Dra EM618 Đen",
+      "keyboard": "Bàn phím cơ Dareu EK87 White",
+      "headPhone": "Tai nghe Asus ROG Delta Gundam LTD",
+      "webcam": "Webcam Rapoo C200 HD 720p",
+      "cardReader": "USB 4.0",
+      "fanCase": "Fan Case Fan Vitra Snow RGB"
+    }
+  },
+  {
+    "facilityType": "computer",
+    "name": "Dell vostro 3568",
+    "origin": "Việt Nam",
+    "price": 18000000,
+    "configuration": {
+      "cpu": "CPU Intel Core i9-11900K (3.5GHz turbo up to 5.3Ghz, 8 nhân 16 luồng, 16MB Cache, 125W)",
+      "mainboard": "Mainboard Gigabyte B560M-AORUS ELITE",
+      "psu": "Nguồn Asus ROG Strix 850W Gold - 850W 80 Plus Gold Full Modular",
+      "ram": "Ram Desktop AVEXIR 2CORGB (AVD4UZ330001608G-2CORGB) 16GB (2x8GB) DDR4 3000Mhz",
+      "vga": "Card màn hình Asus GT1030-SL-2G-BRK (2GB GDDR5, 64-bit, DVI+HDMI",
+      "hardDrive": "Ổ cứng SSD Adata SX6000PNP 512GB M.2 2280 PCIe NVMe Gen 3x4 (Đọc 2100MB/s - Ghi 1400MB/s) - (ASX6000PNP-512GT-C)",
+      "opticalDrive": "",
+      "monitor": "Màn hình LG 29WP500-B",
+      "mouse": "Chuột E-Dra EM618 Đen",
+      "keyboard": "Bàn phím cơ Dareu EK87 White",
+      "headPhone": "Tai nghe Asus ROG Delta Gundam LTD",
+      "webcam": "Webcam Rapoo C200 HD 720p",
+      "cardReader": "USB 4.0",
+      "fanCase": "Fan Case Fan Vitra Snow RGB"
+    }
+  },
+  {
+    "facilityType": "computer",
+    "name": "HP 240 G8 342G7PA",
+    "origin": "Việt Nam",
+    "price": 11290000,
+    "configuration": {
+      "cpu": "Intel® Core™ i3-1005G1 (1.20GHz up to 3.40GHz, 4MB Cache)",
+      "mainboard": "Mainboard Gigabyte B560M-AORUS ELITE",
+      "psu": "Nguồn Asus ROG Strix 850W Gold - 850W 80 Plus Gold Full Modular",
+      "ram": "Ram Desktop AVEXIR 2CORGB (AVD4UZ330001608G-2CORGB) 16GB (2x8GB) DDR4 3000Mhz",
+      "vga": "Intel® UHD Graphics",
+      "hardDrive": "256GB M.2 SSD",
+      "opticalDrive": "",
+      "monitor": "14.0 inch HD (1366 x 768) SVA Anti-glare WLED 250nits eDP micro-edge 45% NTSC",
+      "mouse": "Chuột E-Dra EM618 Đen",
+      "keyboard": "Bàn phím cơ Dareu EK87 White",
+      "headPhone": "Tai nghe Asus ROG Delta Gundam LTD",
+      "webcam": "720p HD camera",
+      "cardReader": "1 x multi-format digital media reader",
+      "fanCase": "Fan Case Fan Vitra Snow RGB"
+    }
+  },
+  {
+    "facilityType": "computer",
+    "name": "HP 240 G8 342G7PA",
+    "origin": "Việt Nam",
+    "price": 11290000,
+    "configuration": {
+      "cpu": "Intel® Core™ i3-1005G1 (1.20GHz up to 3.40GHz, 4MB Cache)",
+      "mainboard": "Mainboard Gigabyte B560M-AORUS ELITE",
+      "psu": "Nguồn Asus ROG Strix 850W Gold - 850W 80 Plus Gold Full Modular",
+      "ram": "Ram Desktop AVEXIR 2CORGB (AVD4UZ330001608G-2CORGB) 16GB (2x8GB) DDR4 3000Mhz",
+      "vga": "Intel® UHD Graphics",
+      "hardDrive": "256GB M.2 SSD",
+      "opticalDrive": "",
+      "monitor": "14.0 inch HD (1366 x 768) SVA Anti-glare WLED 250nits eDP micro-edge 45% NTSC",
+      "mouse": "Chuột E-Dra EM618 Đen",
+      "keyboard": "Bàn phím cơ Dareu EK87 White",
+      "headPhone": "Tai nghe Asus ROG Delta Gundam LTD",
+      "webcam": "720p HD camera",
+      "cardReader": "1 x multi-format digital media reader",
+      "fanCase": "Fan Case Fan Vitra Snow RGB"
+    }
+  },
+  {
+    "facilityType": "computer",
+    "name": "HP 240 G8 342G7PA",
+    "origin": "Việt Nam",
+    "price": 11290000,
+    "configuration": {
+      "cpu": "Intel® Core™ i3-1005G1 (1.20GHz up to 3.40GHz, 4MB Cache)",
+      "mainboard": "Mainboard Gigabyte B560M-AORUS ELITE",
+      "psu": "Nguồn Asus ROG Strix 850W Gold - 850W 80 Plus Gold Full Modular",
+      "ram": "Ram Desktop AVEXIR 2CORGB (AVD4UZ330001608G-2CORGB) 16GB (2x8GB) DDR4 3000Mhz",
+      "vga": "Intel® UHD Graphics",
+      "hardDrive": "256GB M.2 SSD",
+      "opticalDrive": "",
+      "monitor": "14.0 inch HD (1366 x 768) SVA Anti-glare WLED 250nits eDP micro-edge 45% NTSC",
+      "mouse": "Chuột E-Dra EM618 Đen",
+      "keyboard": "Bàn phím cơ Dareu EK87 White",
+      "headPhone": "Tai nghe Asus ROG Delta Gundam LTD",
+      "webcam": "720p HD camera",
+      "cardReader": "1 x multi-format digital media reader",
+      "fanCase": "Fan Case Fan Vitra Snow RGB"
+    }
+  },
+  {
+    "facilityType": "computer",
+    "name": "HP 348 G7 9PH08PA",
+    "origin": "Việt Nam",
+    "price": 16090000,
+    "configuration": {
+      "cpu": "Intel® Core™ i5-10210U (1.60GHz up to 4.20GHz, 6MB Cache)",
+      "mainboard": "Mainboard Gigabyte B560M-AORUS ELITE",
+      "psu": "Nguồn Asus ROG Strix 850W Gold - 850W 80 Plus Gold Full Modular",
+      "ram": "8GB DDR4 2666Mhz",
+      "vga": "AMD Radeon 530 2GB GDDR5",
+      "hardDrive": "512GB PCIe® NVMe™ M.2 SSD",
+      "opticalDrive": "",
+      "monitor": "14 FHD (1920 x 1080) diagonal SVA anti-glare WLED-backlit, 220 nits, 45% NTSC",
+      "mouse": "Chuột E-Dra EM618 Đen",
+      "keyboard": "Bàn phím cơ Dareu EK87 White",
+      "headPhone": "",
+      "webcam": "720p HD Camera; IR Camera",
+      "cardReader": "MicroSD card reader",
+      "fanCase": "Fan Case Fan Vitra Snow RGB"
+    }
+  },
+  {
+    "facilityType": "computer",
+    "name": "PC Dell XPS 8940 70226564",
+    "origin": "Việt Nam",
+    "price": 32790000,
+    "configuration": {
+      "cpu": "Intel Core i7-10700 (2.90GHz upto 4.80GHz, 8 Cores 16 Threads, 16MB Cache)",
+      "mainboard": "Mainboard Gigabyte B560M-AORUS ELITE",
+      "psu": "Nguồn Asus ROG Strix 850W Gold - 850W 80 Plus Gold Full Modular",
+      "ram": "16GB (2x8GB) bus 2933MHz",
+      "vga": "NVIDIA GeForce GTX 1650 SUPER 4GB GDDR6",
+      "hardDrive": "512GB PCIe M.2 + 1TB SATA 7200 RPM HDD",
+      "opticalDrive": "",
+      "monitor": "Màn hình LG 29WP500-B",
+      "mouse": "Chuột E-Dra EM618 Đen",
+      "keyboard": "Bàn phím cơ Dareu EK87 White",
+      "headPhone": "",
+      "webcam": "",
+      "cardReader": "7 x USB 3.1; 2 x USB 2.0; 1 x USB 3.1 Gen 1 (Type-C), 1 x Audio port (5.1 channel 3 Jack), 1 x Headset jack, 1xSD-card, 1xRJ-45",
+      "fanCase": "Fan Case Fan Vitra Snow RGB"
+    }
+  },
+  {
+    "facilityType": "computer",
+    "name": "PC Dell XPS 8940 70226564",
+    "origin": "Việt Nam",
+    "price": 32790000,
+    "configuration": {
+      "cpu": "Intel Core i7-10700 (2.90GHz upto 4.80GHz, 8 Cores 16 Threads, 16MB Cache)",
+      "mainboard": "Mainboard Gigabyte B560M-AORUS ELITE",
+      "psu": "Nguồn Asus ROG Strix 850W Gold - 850W 80 Plus Gold Full Modular",
+      "ram": "16GB (2x8GB) bus 2933MHz",
+      "vga": "NVIDIA GeForce GTX 1650 SUPER 4GB GDDR6",
+      "hardDrive": "512GB PCIe M.2 + 1TB SATA 7200 RPM HDD",
+      "opticalDrive": "",
+      "monitor": "Màn hình LG 29WP500-B",
+      "mouse": "Chuột E-Dra EM618 Đen",
+      "keyboard": "Bàn phím cơ Dareu EK87 White",
+      "headPhone": "",
+      "webcam": "",
+      "cardReader": "7 x USB 3.1; 2 x USB 2.0; 1 x USB 3.1 Gen 1 (Type-C), 1 x Audio port (5.1 channel 3 Jack), 1 x Headset jack, 1xSD-card, 1xRJ-45",
+      "fanCase": "Fan Case Fan Vitra Snow RGB"
+    }
+  },
+  {
+    "facilityType": "computer",
+    "name": "PC Dell XPS 8940 70226564",
+    "origin": "Việt Nam",
+    "price": 32790000,
+    "configuration": {
+      "cpu": "Intel Core i7-10700 (2.90GHz upto 4.80GHz, 8 Cores 16 Threads, 16MB Cache)",
+      "mainboard": "Mainboard Gigabyte B560M-AORUS ELITE",
+      "psu": "Nguồn Asus ROG Strix 850W Gold - 850W 80 Plus Gold Full Modular",
+      "ram": "16GB (2x8GB) bus 2933MHz",
+      "vga": "NVIDIA GeForce GTX 1650 SUPER 4GB GDDR6",
+      "hardDrive": "512GB PCIe M.2 + 1TB SATA 7200 RPM HDD",
+      "opticalDrive": "",
+      "monitor": "Màn hình LG 29WP500-B",
+      "mouse": "Chuột E-Dra EM618 Đen",
+      "keyboard": "Bàn phím cơ Dareu EK87 White",
+      "headPhone": "",
+      "webcam": "",
+      "cardReader": "7 x USB 3.1; 2 x USB 2.0; 1 x USB 3.1 Gen 1 (Type-C), 1 x Audio port (5.1 channel 3 Jack), 1 x Headset jack, 1xSD-card, 1xRJ-45",
+      "fanCase": "Fan Case Fan Vitra Snow RGB"
+    }
+  },
+  {
+    "facilityType": "computer",
+    "name": "Asus ZenBook Duo 14 UX482EG-KA099T",
+    "origin": "Việt Nam",
+    "price": 40990000,
+    "configuration": {
+      "cpu": "Intel® Core™ i7-1165G7 (2.80GHz up to 4.70GHz, 12MB Cache)",
+      "mainboard": "",
+      "psu": "",
+      "ram": "16GB LPDDR4X on board",
+      "vga": "NVIDIA GeForce MX450 2GB GDDR6",
+      "hardDrive": "1TB M.2 NVMe™ PCIe® 3.0 SSD",
+      "opticalDrive": "",
+      "monitor": "14.0 inch FHD(1920 x 1080) TOUCH WV, 400NITS, NTSC:72%-NB",
+      "mouse": "",
+      "keyboard": "",
+      "headPhone": "",
+      "webcam": "HD camera",
+      "cardReader": "Micro SD card reader",
+      "fanCase": ""
+    }
+  },
+  {
+    "facilityType": "computer",
+    "name": "Asus ZenBook 13 UX325EA-EG081T",
+    "origin": "Việt Nam",
+    "price": 21290000,
+    "configuration": {
+      "cpu": "Intel® Core™ i5-1135G7 (2.40GHz up to 4.20Ghz, 8MB)",
+      "mainboard": "",
+      "psu": "",
+      "ram": "8GB 4266MHz LPDDR4X",
+      "vga": "Intel® Iris® Xe Graphics",
+      "hardDrive": "256GB SSD PCIe® NVMe™ 3.0 x2 M.2",
+      "opticalDrive": "",
+      "monitor": "13.3 inch FHD (1920 x 1080) Anti-glare WV 300nits Glare 72% NTSC",
+      "mouse": "",
+      "keyboard": "",
+      "headPhone": "",
+      "webcam": "HD camera",
+      "cardReader": "Micro SD card reader",
+      "fanCase": ""
+    }
+  },
+  {
     "facilityType": "fax",
     "name": "Máy fax Laser Canon L170",
     "origin": "Canon",
-    "price": 18000000,
+    "price": 20560000,
+    "configuration": {
+      "model": "L170",
+      "faxSpeed": "Tốc độ Modem Up to 33.6Kbps.",
+      "resolution": "600Dpi",
+      "ram": "Dung lượng bộ nhớ 512 trang.",
+      "paperSize": "Khay giấy vào: 150 tờ; khay giấy ra: 100 tờ",
+      "printInk": "Cartridge 328"
+    }
+  },
+  {
+    "facilityType": "fax",
+    "name": "Máy fax Laser Canon L170",
+    "origin": "Canon",
+    "price": 20560000,
+    "configuration": {
+      "model": "L170",
+      "faxSpeed": "Tốc độ Modem Up to 33.6Kbps.",
+      "resolution": "600Dpi",
+      "ram": "Dung lượng bộ nhớ 512 trang.",
+      "paperSize": "Khay giấy vào: 150 tờ; khay giấy ra: 100 tờ",
+      "printInk": "Cartridge 328"
+    }
+  },
+  {
+    "facilityType": "fax",
+    "name": "Máy fax Laser Canon L170",
+    "origin": "Canon",
+    "price": 20560000,
+    "configuration": {
+      "model": "L170",
+      "faxSpeed": "Tốc độ Modem Up to 33.6Kbps.",
+      "resolution": "600Dpi",
+      "ram": "Dung lượng bộ nhớ 512 trang.",
+      "paperSize": "Khay giấy vào: 150 tờ; khay giấy ra: 100 tờ",
+      "printInk": "Cartridge 328"
+    }
+  },
+  {
+    "facilityType": "fax",
+    "name": "Máy fax Laser Canon L170",
+    "origin": "Canon",
+    "price": 20560000,
     "configuration": {
       "model": "L170",
       "faxSpeed": "Tốc độ Modem Up to 33.6Kbps.",
@@ -40,6 +368,102 @@
     "name": "Máy in Laser màu Canon LBP613CDW",
     "origin": "Canon",
     "price": 18000000,
+    "configuration": {
+      "model": "LBP613CDW",
+      "printSpeed": "In đen trắng: 18 trang/ phút (A4/Letter)/ In màu: 18 trang/ phút (A4/Letter)",
+      "resolution": "Lên tới 9,600 (tương đương) x 600dpi",
+      "ram": "1 GB",
+      "paperSize": "A4, B5, A5, Legal (x1), Letter, Executive, Statement, Foolscap, Indian Legal, Index Card. Envelope: COM10, Monarch, C5, DL, Custom sizes (Width: 76.2 to 215.9mm, Length: 127.0 to 355.6mm)",
+      "printInk": "Cartridge Canon 045BK/C/M/Y",
+      "duplexPrint": "có",
+      "communication": "USB/ LAN/ WIFI"
+    }
+  },
+  {
+    "facilityType": "printer",
+    "name": "Máy in Laser màu Canon LBP613CDW",
+    "origin": "Canon",
+    "price": 18000000,
+    "configuration": {
+      "model": "LBP613CDW",
+      "printSpeed": "In đen trắng: 18 trang/ phút (A4/Letter)/ In màu: 18 trang/ phút (A4/Letter)",
+      "resolution": "Lên tới 9,600 (tương đương) x 600dpi",
+      "ram": "1 GB",
+      "paperSize": "A4, B5, A5, Legal (x1), Letter, Executive, Statement, Foolscap, Indian Legal, Index Card. Envelope: COM10, Monarch, C5, DL, Custom sizes (Width: 76.2 to 215.9mm, Length: 127.0 to 355.6mm)",
+      "printInk": "Cartridge Canon 045BK/C/M/Y",
+      "duplexPrint": "có",
+      "communication": "USB/ LAN/ WIFI"
+    }
+  },
+  {
+    "facilityType": "printer",
+    "name": "Máy in Laser màu Canon LBP613CDW",
+    "origin": "Canon",
+    "price": 18000000,
+    "configuration": {
+      "model": "LBP613CDW",
+      "printSpeed": "In đen trắng: 18 trang/ phút (A4/Letter)/ In màu: 18 trang/ phút (A4/Letter)",
+      "resolution": "Lên tới 9,600 (tương đương) x 600dpi",
+      "ram": "1 GB",
+      "paperSize": "A4, B5, A5, Legal (x1), Letter, Executive, Statement, Foolscap, Indian Legal, Index Card. Envelope: COM10, Monarch, C5, DL, Custom sizes (Width: 76.2 to 215.9mm, Length: 127.0 to 355.6mm)",
+      "printInk": "Cartridge Canon 045BK/C/M/Y",
+      "duplexPrint": "có",
+      "communication": "USB/ LAN/ WIFI"
+    }
+  },
+  {
+    "facilityType": "printer",
+    "name": "Máy in laser màu HP Color LaserJet Pro M155a",
+    "origin": "Canon",
+    "price": 18000000,
+    "configuration": {
+      "model": "LBP613CDW",
+      "printSpeed": "In đen trắng: 18 trang/ phút (A4/Letter)/ In màu: 18 trang/ phút (A4/Letter)",
+      "resolution": "Lên tới 9,600 (tương đương) x 600dpi",
+      "ram": "1 GB",
+      "paperSize": "A4, B5, A5, Legal (x1), Letter, Executive, Statement, Foolscap, Indian Legal, Index Card. Envelope: COM10, Monarch, C5, DL, Custom sizes (Width: 76.2 to 215.9mm, Length: 127.0 to 355.6mm)",
+      "printInk": "Cartridge Canon 045BK/C/M/Y",
+      "duplexPrint": "có",
+      "communication": "USB/ LAN/ WIFI"
+    }
+  },
+  {
+    "facilityType": "printer",
+    "name": "Máy in laser màu HP Color LaserJet Pro M155a",
+    "origin": "Canon",
+    "price": 18000000,
+    "configuration": {
+      "model": "LBP613CDW",
+      "printSpeed": "In đen trắng: 18 trang/ phút (A4/Letter)/ In màu: 18 trang/ phút (A4/Letter)",
+      "resolution": "Lên tới 9,600 (tương đương) x 600dpi",
+      "ram": "1 GB",
+      "paperSize": "A4, B5, A5, Legal (x1), Letter, Executive, Statement, Foolscap, Indian Legal, Index Card. Envelope: COM10, Monarch, C5, DL, Custom sizes (Width: 76.2 to 215.9mm, Length: 127.0 to 355.6mm)",
+      "printInk": "Cartridge Canon 045BK/C/M/Y",
+      "duplexPrint": "có",
+      "communication": "USB/ LAN/ WIFI"
+    }
+  },
+  {
+    "facilityType": "printer",
+    "name": "Máy In Laser Đen Trắng Canon LBP 2900",
+    "origin": "Canon",
+    "price": 5690000,
+    "configuration": {
+      "model": "LBP613CDW",
+      "printSpeed": "In đen trắng: 18 trang/ phút (A4/Letter)/ In màu: 18 trang/ phút (A4/Letter)",
+      "resolution": "Lên tới 9,600 (tương đương) x 600dpi",
+      "ram": "1 GB",
+      "paperSize": "A4, B5, A5, Legal (x1), Letter, Executive, Statement, Foolscap, Indian Legal, Index Card. Envelope: COM10, Monarch, C5, DL, Custom sizes (Width: 76.2 to 215.9mm, Length: 127.0 to 355.6mm)",
+      "printInk": "Cartridge Canon 045BK/C/M/Y",
+      "duplexPrint": "có",
+      "communication": "USB/ LAN/ WIFI"
+    }
+  },
+  {
+    "facilityType": "printer",
+    "name": "Máy In Laser Đen Trắng Canon LBP 2900",
+    "origin": "Canon",
+    "price": 5690000,
     "configuration": {
       "model": "LBP613CDW",
       "printSpeed": "In đen trắng: 18 trang/ phút (A4/Letter)/ In màu: 18 trang/ phút (A4/Letter)",

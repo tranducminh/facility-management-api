@@ -1,23 +1,105 @@
 [
   {
-    "identity": "17021067",
-    "name": "Nguyễn Tiến Toàn",
+    "identity": "18021118",
+    "name": "Lê Thị Tâm",
+    "email": "18021118@hcma.edu.vn",
     "unit": "Kỹ thuật",
-    "email": "17021067@hcma.edu.vn",
+    "specializes": [
+      "computer",
+      "printer",
+      "fax"
+    ]
+  },
+  {
+    "identity": "18021195",
+    "name": "Trương Gia Bảo Thao",
+    "email": "18021195@hcma.edu.vn",
+    "unit": "Kỹ thuật",
     "specializes": [
       "computer",
       "printer"
     ]
   },
   {
-    "identity": "17022412",
-    "name": "Nguyễn Ngọc Hải",
+    "identity": "18021245",
+    "name": "Trịnh Thị Thư",
+    "email": "18021245@hcma.edu.vn",
     "unit": "Kỹ thuật",
-    "email": "17022412@hcma.edu.vn",
     "specializes": [
       "computer",
       "printer",
       "fax"
+    ]
+  },
+  {
+    "identity": "18021277",
+    "name": "Nguyễn Thái Tiệp",
+    "email": "18021277@hcma.edu.vn",
+    "unit": "Kỹ thuật",
+    "specializes": [
+      "computer"
+    ]
+  },
+  {
+    "identity": "18021279",
+    "name": "Vương Thành Toàn",
+    "email": "18021279@hcma.edu.vn",
+    "unit": "Kỹ thuật",
+    "specializes": [
+      "computer",
+      "printer",
+      "fax"
+    ]
+  },
+  {
+    "identity": "17021070",
+    "name": "Nguyễn Thị Hương Trà",
+    "email": "17021070@hcma.edu.vn",
+    "unit": "Kỹ thuật",
+    "specializes": [
+      "computer",
+      "fax"
+    ]
+  },
+  {
+    "identity": "17021096",
+    "name": "Nguyễn Văn Tú",
+    "email": "17021096@hcma.edu.vn",
+    "unit": "Kỹ thuật",
+    "specializes": [
+      "fax",
+      "printer"
+    ]
+  },
+  {
+    "identity": "17021118",
+    "name": "Phạm Văn Tuyên",
+    "email": "17021118@hcma.edu.vn",
+    "unit": "Kỹ thuật",
+    "specializes": [
+      "computer",
+      "printer",
+      "fax"
+    ]
+  },
+  {
+    "identity": "18021412",
+    "name": "Vũ Tố Uyên",
+    "email": "18021412@hcma.edu.vn",
+    "unit": "Kỹ thuật",
+    "specializes": [
+      "computer",
+      "printer"
+    ]
+  },
+  {
+    "identity": "18021451",
+    "name": "Nguyễn Thị Xuân",
+    "email": "18021451@hcma.edu.vn",
+    "unit": "Kỹ thuật",
+    "specializes": [
+      "fax",
+      "printer"
     ]
   }
 ]
