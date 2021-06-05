@@ -39,7 +39,14 @@ export class FacilitiesService {
 
   async create(createFacilityDto: CreateFacilityDto) {
     try {
-      const { employeeId, facilityType } = createFacilityDto;
+      const {
+        employeeId,
+        facilityType,
+        configuration,
+        name,
+        origin,
+        price,
+      } = createFacilityDto;
       let newFacility;
       const facilityType_ = await this.facilityTypeRepository.findOne({
         name: facilityType,
@@ -55,7 +62,10 @@ export class FacilitiesService {
           throw new NotFoundException('Không tìm thấy cán bộ được bàn giao');
         }
         newFacility = this.facilityRepository.create({
-          ...createFacilityDto,
+          name,
+          price,
+          origin,
+          configuration: configuration || { isActive: true },
           employee,
           facilityType: facilityType_,
         });
