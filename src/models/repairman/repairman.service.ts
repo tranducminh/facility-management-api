@@ -119,7 +119,7 @@ export class RepairmanService {
         .andWhere('ft.name = :specialize')
         .andWhere('repairman.isActive = true')
         .leftJoinAndSelect('repairman.specializes', 's1')
-        .leftJoinAndSelect('s.facilityType', 'ft1')
+        .leftJoinAndSelect('s1.facilityType', 'ft1')
         .skip((offset - 1) * limit)
         .limit(limit)
         .orderBy('repairman.created_at', 'DESC')
