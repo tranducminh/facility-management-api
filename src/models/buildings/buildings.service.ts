@@ -80,6 +80,7 @@ export class BuildingsService {
         .leftJoinAndSelect('facility.facilityType', 'facilityType')
         .where('building.isActive = true')
         .andWhere('building.name = :name')
+        .orderBy('floor.name', 'ASC')
         .setParameters({ isActive: 'true', name })
         .getOne();
       if (!building) {

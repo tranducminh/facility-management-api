@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { catchError } from 'src/common/helpers/catch-error';
 import { Repository } from 'typeorm';
@@ -22,13 +26,27 @@ export class ReplacementsService {
     try {
       const { requestId, facilityId } = createReplacementDto;
       const request = await this.requestRepository.findOne(requestId);
+      if (!request) {
+        throw new NotFoundException('Không tìm thấy yêu cầu');
+      }
       const facility = await this.facilityRepository.findOne(facilityId);
+      if (!facility) {
+        throw new NotFoundException('Không tìm thấy thiết bị');
+      }
       const newReplacement = await this.replacementRepository.create({
         ...createReplacementDto,
         request,
         facility,
       });
-      return await this.replacementRepository.save(newReplacement);
+      const saveReplacement = await this.replacementRepository.save(
+        newReplacement,
+      );
+      if (!saveReplacement) {
+        throw new BadRequestException(
+          `Thay thế linh kiện ${createReplacementDto.component} không thành công`,
+        );
+      }
+      return saveReplacement;
     } catch (error) {
       console.log(error);
       catchError(error);
