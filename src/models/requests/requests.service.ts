@@ -328,7 +328,7 @@ export class RequestsService {
         throw new NotFoundException('Không tìm thấy tài khoản kỹ thuật viên');
       }
       const request = await this.requestRepository.findOne(id, {
-        relations: ['facility'],
+        relations: ['facility', 'employee', 'repairman'],
         where: { isActive: true },
       });
       if (!request) {

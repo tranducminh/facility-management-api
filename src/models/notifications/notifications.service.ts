@@ -96,6 +96,7 @@ export class NotificationsService {
       const newNotification = await this.notificationRepository.save(
         notification,
       );
+      console.log(newNotification);
       if (process.env.ENABLED_NOTIFICATION === 'true') {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const Pusher = require('pusher');
